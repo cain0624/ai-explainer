@@ -1,0 +1,11 @@
+# macOS
+.DS_Store
+._*
+
+# 编辑器和备份文件
+*.bak
+*.swp
+*.tmp
+
+# 不做构建产物留存
+node_modules/

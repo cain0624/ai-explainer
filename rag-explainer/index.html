@@ -1,0 +1,1326 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="tuFzOKyuARyHze50mQ8tsr">
+<head data-page-node-id="lRQRGkXMcigk7TcyjgjNqn">
+<meta charset="UTF-8" data-page-node-id="DfUeXZRFbJboSyxSMT9JCX">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="T05QrJAjIYC3PJuzA5nbGf">
+<title>RAG 知识图谱 · 从原理到实践</title>
+<link rel="stylesheet" href="styles.css" data-page-node-id="0ss9PGfVkJiDJFcyxvsloE">
+</head>
+<body data-page-node-id="YYGwVdWm6toylQz9xWqUrL">
+
+<!-- 顶部导航 -->
+<nav class="nav" data-page-node-id="Nguys8U9YfFdTeEqUROeZf">
+  <div class="nav-inner" data-page-node-id="rYApXiZLirKBHKKI4OFA7I">
+    <div class="site-switch" id="site-switch" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="切换站点" data-page-node-id="siteSw0001">
+      <div class="brand" data-page-node-id="jBXCZwuLB3PBKj3DV1Etim">
+        <span class="brand-mark" data-page-node-id="QmJ9AbekotX6X4nsCQR6uI">RAG</span>
+        <span class="brand-text" data-page-node-id="OFhvTQOZJWIH8cDjAXpBqN">检索增强生成 · 知识图谱</span>
+      </div>
+      <span class="brand-caret" aria-hidden="true" data-page-node-id="siteCar0001">
+        <svg width="11" height="7" viewBox="0 0 11 7" data-page-node-id="siteCar0002"><path d="M1 1.2 L5.5 5.6 L10 1.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </span>
+
+      <div class="brand-menu" role="menu" data-page-node-id="siteMenu001">
+        <div class="brand-menu-label" data-page-node-id="siteMenuL001">切换站点</div>
+        <div class="brand-menu-item is-current" role="menuitem" tabindex="0" data-goto="rag" data-page-node-id="siteItem001">
+          <span class="bm-mark" data-page-node-id="siteItemM001">RAG</span>
+          <span class="bm-body" data-page-node-id="siteItemB001">
+            <span class="bm-name" data-page-node-id="siteItemN001">检索增强生成 · 知识图谱</span>
+            <span class="bm-sub" data-page-node-id="siteItemS001">离线索引 + 在线检索生成</span>
+          </span>
+          <span class="bm-badge" data-page-node-id="siteItemG001">当前</span>
+        </div>
+        <div class="brand-menu-item" role="menuitem" tabindex="0" data-goto="agent" data-page-node-id="siteItem002">
+          <span class="bm-mark" data-page-node-id="siteItemM002">AGENT</span>
+          <span class="bm-body" data-page-node-id="siteItemB002">
+            <span class="bm-name" data-page-node-id="siteItemN002">智能体 · 从原理到实践</span>
+            <span class="bm-sub" data-page-node-id="siteItemS002">LLM + Tools + Memory + Planning</span>
+          </span>
+          <span class="bm-arrow" data-page-node-id="siteItemA002">↗</span>
+        </div>
+      </div>
+    </div>
+    <ul class="nav-links" data-page-node-id="Bp9eR5q2R5AOBWCALXewyI">
+      <li data-page-node-id="JVOXCXRJkMZ2XYttzIoY7A"><a href="#why" data-page-node-id="5VQVVxD2GO8Vb0fFYAHoPl">为什么</a></li>
+      <li data-page-node-id="Ta1rey6WZey3TLafHuiLCg"><a href="#what" data-page-node-id="V6bdbMXgVf39JLm1fiICgF">是什么</a></li>
+      <li data-page-node-id="pFsdJZSyRKLuzFxk6PO2eA"><a href="#flow" data-page-node-id="fvHpCenMOuIw8CVgJoNQKJ">全链路</a></li>
+      <li data-page-node-id="IMM7chosIuZo9v7YBn1t6P"><a href="#components" data-page-node-id="EWYqKEo8Q5jetqa0aRdl7X">8 件套</a></li>
+      <li data-page-node-id="OZQVtpVwisyHcn3eqpMC1C"><a href="#advanced" data-page-node-id="fYk1n0MpX96EXEWLC9KMMq">进阶</a></li>
+      <li data-page-node-id="5uk2WOt24ouQchbTMLSm7h"><a href="#code" data-page-node-id="y5myEbm4T7aolCTdCmu8di">实战</a></li>
+      <li data-page-node-id="psW9V8ffXsSAzfLhWOx34L"><a href="#eval" data-page-node-id="pHTwDlt1GDs5CuBXIUflAw">评估</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="hero" data-page-node-id="1vBPRfiThS9Ob7OHAWEAF0">
+  <div class="hero-bg" data-page-node-id="d4QNobhhyNcCjIjAu1Rbu7"></div>
+  <div class="hero-content" data-page-node-id="VQgVUECf89ARCdItD6gsyM">
+    <div class="hero-tag" data-page-node-id="ULHxezuOgc1isZyXYBp8pq">CHAPTER 00 · 一句话读懂 RAG</div>
+    <h1 class="hero-title" data-page-node-id="84O3tD4geoXPEp5Ox8A0EN">
+      让大模型从<span class="grad-text" data-page-node-id="z7gX1TI6a8j6W2BNlSc579">「闭卷考试」</span>变成<span class="grad-text" data-page-node-id="3CuVkOsAUI1IYanCx4EscU">「开卷考试」</span>
+    </h1>
+    <p class="hero-sub" data-page-node-id="tgVe0sQqv1mSahE37YQTKr">
+      RAG（Retrieval-Augmented Generation，检索增强生成）= 检索 + 生成。
+      在 LLM 回答问题之前，先从你的私域知识库里<strong data-page-node-id="OnBzEXG6pke8Dg7epc4inG">翻书</strong>，找到最相关的几段资料塞给模型，
+      再让模型基于资料作答。从此告别幻觉、知识陈旧、答非所问。
+    </p>
+    <div class="hero-compare" data-page-node-id="upCpnJDPFZVa14duSfmwnw">
+      <div class="compare-card bad" data-page-node-id="bmXlOcLJErBBw8v4jDdITK">
+        <div class="compare-icon" data-page-node-id="XACTtKUYKJp4lyfB0T6ZbL">🚫</div>
+        <div class="compare-title" data-page-node-id="HIrd4wNGB4UwzBAM8nQYp4">传统 LLM（闭卷）</div>
+        <div class="compare-desc" data-page-node-id="CSOprDbtbmyPAOSzjJhW92">靠训练时的参数记忆回答，不知道你公司的产品手册、最新政策、内部 SOP</div>
+      </div>
+      <div class="compare-arrow" data-page-node-id="RXsnBoLergVIPu3fXH0gJq">→</div>
+      <div class="compare-card good" data-page-node-id="iw8MtJMPW68N30KWbdTF1E">
+        <div class="compare-icon" data-page-node-id="m2flWPW2sUErbOA91YKOZG">✅</div>
+        <div class="compare-title" data-page-node-id="NrxLarRbZyKY0EVHdnDQ1d">RAG 系统（开卷）</div>
+        <div class="compare-desc" data-page-node-id="fFUQ8jhHFmps383UhR9AmD">回答前先检索知识库，每条结论都能附上出处和原文，事实可控、可审计</div>
+      </div>
+    </div>
+    <div class="hero-stat" data-page-node-id="0yoUYORZzogoZjS26R1dCN">
+      <div class="stat-item" data-page-node-id="2zsmL9gHoT7XVYX924iSG2"><div class="stat-num" data-page-node-id="WissmpexbK9t6EMWb8CCmD">11</div><div class="stat-label" data-page-node-id="T5ghKlbvXFyVHcNk5AG4Fw">个核心环节</div></div>
+      <div class="stat-item" data-page-node-id="XfFNtUkdR7FTZtuDpaKL4Q"><div class="stat-num" data-page-node-id="EZH6w1EzJGidLpGPRJdo6P">8</div><div class="stat-label" data-page-node-id="nrKKDU9Nsdmi1wpFlqMUxE">个关键组件</div></div>
+      <div class="stat-item" data-page-node-id="w3Pa6WSOMAFM721VyCj40p"><div class="stat-num" data-page-node-id="SMFqBXtZEGkuqsLVvjXzpj">5</div><div class="stat-label" data-page-node-id="E25ojZjZZqXWGrRd0G2jeY">类进阶变体</div></div>
+      <div class="stat-item" data-page-node-id="GwwcT1GvEOpFKLuVEYeKFv"><div class="stat-num" data-page-node-id="hexqVkqqy5THdvAAbfyXgq">4</div><div class="stat-label" data-page-node-id="B2wksgJmNQhjrm8yFwbLZw">项评估指标</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- 一、为什么需要 RAG -->
+<section id="why" class="section section-alt" data-page-node-id="Zuky91facRJaJiC6ulthVU">
+  <div class="section-head" data-page-node-id="4eTCTrObM3S8td0H2Zcpkn">
+    <span class="section-num" data-page-node-id="qnRhWwAywGArVnOU0FY0Sh">01</span>
+    <h2 data-page-node-id="OPWU8is2soZkAcNuYvYq2Y">为什么需要 RAG？——直击 LLM 的四大痛点</h2>
+    <p data-page-node-id="raf58EENRyuxVc7WFUr03r">裸用大模型就像让一个博学的「外星人」替你做生意</p>
+  </div>
+  <div class="pain-grid" data-page-node-id="UCRigLp5tUI4O16UbBN4Jo">
+    <div class="pain-card" data-page-node-id="dDn7TfSSyAbmqKHIWsJd4j">
+      <div class="pain-emoji" data-page-node-id="kn35nPuvF7xSgrqegGQBpu">🤥</div>
+      <h3 data-page-node-id="DCsAtrBflLRkse5NKW3G6w">幻觉 Hallucination</h3>
+      <p data-page-node-id="foHdZOqYzNJA19C42Yg8X8">模型一本正经地胡说八道，编造不存在的案例、法规、产品参数。</p>
+      <div class="pain-fix" data-page-node-id="ECtfo6XulTD9MNGHAGj4eK"><strong data-page-node-id="fgbdS6tqCLjQl4mUzECeW9">RAG 解法：</strong>强制基于检索到的原文回答，每段标注出处</div>
+    </div>
+    <div class="pain-card" data-page-node-id="fwNOF9jPUDYXJlfCGyJixF">
+      <div class="pain-emoji" data-page-node-id="sLLndMvEHvqnl4B74LqDuo">⏰</div>
+      <h3 data-page-node-id="ooQIdlAjOdbJnaRofTvHdx">知识截止 Knowledge Cutoff</h3>
+      <p data-page-node-id="jgCqhTMO85cG03WCoK0FEQ">模型只知道训练截止日前的事，无法回答"上周发布的政策"、"今天股价"。</p>
+      <div class="pain-fix" data-page-node-id="c9atYyQJZdD8AOdZBAV1Mn"><strong data-page-node-id="iAF4gu7ItBiEQ9v4bo8WzR">RAG 解法：</strong>知识库实时更新，检索时拉最新文档</div>
+    </div>
+    <div class="pain-card" data-page-node-id="gzB6gB9PfdvGCwWc2fMNuI">
+      <div class="pain-emoji" data-page-node-id="PH1P1GFeDhPHDHt6aNTW4J">🔒</div>
+      <h3 data-page-node-id="dshZLWjRJV8SuyTL7DmPqP">私域盲区 Private Domain Blind</h3>
+      <p data-page-node-id="LPZX8XnSUL8bEKFrPek6PH">你公司的产品手册、内部 SOP、客户档案，模型从没见过。</p>
+      <div class="pain-fix" data-page-node-id="IEyjtomIv4CKTVbkbvRBHL"><strong data-page-node-id="4lpbghkmjgaftrO5Db7YSw">RAG 解法：</strong>把企业文档向量化入库，模型"读"得到</div>
+    </div>
+    <div class="pain-card" data-page-node-id="yh1enKjZVf9P000S5oK8b8">
+      <div class="pain-emoji" data-page-node-id="HUbObHCOZVedciw99kBKGv">📏</div>
+      <h3 data-page-node-id="EU3MDxFObj68bXzUoHhUJu">无法溯源 No Provenance</h3>
+      <p data-page-node-id="KtwTChl2wM2vWlmCOYLWXJ">金融、医疗、法律场景需要"依据"，模型说"我觉得"是不够的。</p>
+      <div class="pain-fix" data-page-node-id="HHG76LtpVVum0HJFRdq5Vo"><strong data-page-node-id="qFNIvgPQ6QmGiqeOTAjj9p">RAG 解法：</strong>每条结论都挂接原文段落，可点击验证</div>
+    </div>
+  </div>
+</section>
+
+<!-- 二、RAG 是什么 -->
+<section id="what" class="section" data-page-node-id="e0ryGaotNPxKQIOq4smVxS">
+  <div class="section-head" data-page-node-id="XAmxJZDck6TbCzHABpSfVb">
+    <span class="section-num" data-page-node-id="4RVnicPNzw8lORLy4nXL01">02</span>
+    <h2 data-page-node-id="ODp6jxVX6lpRavDVgpNP6A">RAG 到底是什么？</h2>
+    <p data-page-node-id="HLOQnvHtV8W1iJmHIdpXoA">一个公式 + 一个比喻，三分钟讲透</p>
+  </div>
+  <div class="what-grid" data-page-node-id="uImHpUD6cDuaxkaSv7Lqdp">
+    <div class="formula-card" data-page-node-id="pE2g7vNf7e7hLhBgT7pZY5">
+      <div class="formula-label" data-page-node-id="5BWSyURFHOEaUdM9EOHW9J">核心公式</div>
+      <div class="formula" data-page-node-id="5QJKwhtY7cIckBLUk07N9b">
+        <span class="f-blue" data-page-node-id="cODsKJ1r2cXJN2mnrNkqcX">Answer</span>
+        <span class="f-op" data-page-node-id="IwZvfHbOnK0E9PEpkj4GEN">=</span>
+        <span class="f-purple" data-page-node-id="z3Xfw01Yj6SM3ID22UAZzB">LLM</span>
+        <span class="f-op" data-page-node-id="UGZcp6o3VIXL8B0cnsMspD">(</span>
+        <span class="f-pink" data-page-node-id="D5QEOJVz5fvOPVPgYBytO7">Prompt</span>
+        <span class="f-op" data-page-node-id="UjbpCI4qtGlvzHDXE0U4qV">⊕</span>
+        <span class="f-green" data-page-node-id="3E7SuZ3q1T9tq9B9A5Mayx">Retrieve(Query, KB)</span>
+        <span class="f-op" data-page-node-id="LehaGLKBDIOuhCjfv0S6vv">)</span>
+      </div>
+      <p class="formula-note" data-page-node-id="eeBgW2YHOHyxsBxCKjMXch">答案 = 大模型(系统提示 + 用户问题 ⊕ 从知识库检索到的相关内容)</p>
+    </div>
+    <div class="metaphor-card" data-page-node-id="I3CNzc8k5Zec0Rdq1owTWF">
+      <div class="metaphor-icon" data-page-node-id="1i5e51BO1tNfIJtv0upF5m">📚</div>
+      <h3 data-page-node-id="o3Ii4as7kELGZ3eVH9DUvT">一个比喻：律师庭审</h3>
+      <ul class="metaphor-list" data-page-node-id="yMRmhwDhA8gUtRj9DpoMla">
+        <li data-page-node-id="bZeM6SQe98IVtcIndWTna1"><strong data-page-node-id="ozfXBQIaTy2JPT3kFrLxEy">用户提问</strong> = 当事人抛出的法律问题</li>
+        <li data-page-node-id="dSAoCDFhW4kJBDMhYbaXlW"><strong data-page-node-id="dG0emzuL0DMZcwUtK6225M">检索环节</strong> = 律师翻开案卷、找判例、查法条</li>
+        <li data-page-node-id="KV4ogYcBO7BPnUY3NZasrL"><strong data-page-node-id="XCALSCFh2u5wKtZAPCcvnn">Prompt 组装</strong> = 律师把案卷摘要整理成陈述稿</li>
+        <li data-page-node-id="Gv0PDGD8QAMVoNqDlfQXMo"><strong data-page-node-id="YUORJTi8ztHGUe67PffvUK">LLM 生成</strong> = 律师当庭陈述、当场辩护</li>
+        <li data-page-node-id="SHO0z9RmqKxWTWQP728E9I"><strong data-page-node-id="unxpAe4cpNDZuuU90mOXBw">引用标注</strong> = 律师指明"依据 XX 法第 X 条"</li>
+      </ul>
+      <div class="metaphor-punchline" data-page-node-id="HyMgNhnpWiUv7m7OQGVdDf">没有 RAG 的 LLM = 没带案卷上庭的律师，靠记忆瞎辩</div>
+    </div>
+  </div>
+</section>
+
+<!-- 三、RAG 运转流程（离线 + 在线 · 逐步操作交互） -->
+<section id="flow" class="section flow-section">
+  <div class="section-head">
+    <span class="section-num">03</span>
+    <h2>RAG 运转流程 · 离线构建 + 在线问答</h2>
+    <p>把 RAG 按<strong>时间维度</strong>拆成两个阶段：<span class="offline-tag">离线过程</span>把企业文档变成可检索的向量索引，<span class="online-tag">在线过程</span>实时回答用户问题。每个步骤都需要你完成实际配置才能解锁下一步 ⬇️</p>
+  </div>
+
+  <!-- 全局进度条 -->
+  <div class="global-progress">
+    <div class="global-progress-bar">
+      <div class="global-progress-fill" id="global-progress-fill"></div>
+    </div>
+    <div class="global-progress-info">
+      <span id="global-progress-text">📦 准备就绪 · 从离线 ① 开始你的第一次 RAG 构建</span>
+      <span class="global-progress-counter"><span id="global-cur-step">0</span> / 9 步</span>
+    </div>
+    <div class="global-progress-actions">
+      <button class="ctrl-btn small" id="reset-all-btn">⟲ 全部重置</button>
+      <button class="ctrl-btn small primary" id="auto-fill-btn">⚡ 一键自动配置</button>
+    </div>
+  </div>
+
+  <!-- 左右布局：左侧 sticky 步骤导航 + 右侧流程内容 -->
+  <div class="flow-layout">
+
+    <!-- 左侧步骤导航 -->
+    <aside class="flow-sidebar" id="flow-sidebar">
+      <div class="sidebar-head">
+        <span class="sidebar-title">📋 流程导航</span>
+        <span class="sidebar-count"><span id="sidebar-done-count">0</span>/9</span>
+      </div>
+      <nav class="sidebar-nav" id="sidebar-nav">
+        <div class="sidebar-group offline-group" id="sidebar-offline-group">
+          <div class="sidebar-group-label">🟠 Offline · 离线</div>
+          <div class="sidebar-item active" data-step="1" data-status="active">
+            <span class="sidebar-node">①</span>
+            <span class="sidebar-label">数据加载</span>
+          </div>
+          <div class="sidebar-item" data-step="2" data-status="locked">
+            <span class="sidebar-node">②</span>
+            <span class="sidebar-label">清洗</span>
+          </div>
+          <div class="sidebar-item" data-step="3" data-status="locked">
+            <span class="sidebar-node">③</span>
+            <span class="sidebar-label">切片</span>
+          </div>
+          <div class="sidebar-item" data-step="4" data-status="locked">
+            <span class="sidebar-node">④</span>
+            <span class="sidebar-label">向量化</span>
+          </div>
+          <div class="sidebar-item" data-step="5" data-status="locked">
+            <span class="sidebar-node">⑤</span>
+            <span class="sidebar-label">入库</span>
+          </div>
+        </div>
+        <div class="sidebar-group online-group locked" id="sidebar-online-group">
+          <div class="sidebar-group-label">🔵 Online · 在线</div>
+          <div class="sidebar-item" data-step="6" data-status="locked">
+            <span class="sidebar-node">⑥</span>
+            <span class="sidebar-label">Query 向量化</span>
+          </div>
+          <div class="sidebar-item" data-step="7" data-status="locked">
+            <span class="sidebar-node">⑦</span>
+            <span class="sidebar-label">检索</span>
+          </div>
+          <div class="sidebar-item" data-step="8" data-status="locked">
+            <span class="sidebar-node">⑧</span>
+            <span class="sidebar-label">拼 Prompt</span>
+          </div>
+          <div class="sidebar-item" data-step="9" data-status="locked">
+            <span class="sidebar-node">⑨</span>
+            <span class="sidebar-label">生成</span>
+          </div>
+        </div>
+      </nav>
+      <div class="sidebar-tip">💡 点击可跳转到已解锁步骤</div>
+    </aside>
+
+    <!-- 右侧流程内容 -->
+    <div class="flow-main">
+
+  <!-- 离线过程 -->
+  <div class="rag-stage offline" id="offline-stage">
+    <div class="stage-header">
+      <div class="stage-tag">
+        <span class="stage-badge offline-badge">Offline · 离线</span>
+        <h3>阶段一 · 知识库构建</h3>
+      </div>
+      <p class="stage-desc">把企业文档（PDF / Word / Markdown）变成可检索的向量索引，通常一次性跑完即可</p>
+      <div class="stage-meta">
+        <span>⏱ 耗时：分钟～小时级</span>
+        <span>🔁 频率：仅在文档更新时跑</span>
+        <span>🎯 进度：<span id="offline-progress">0</span>/5</span>
+      </div>
+    </div>
+
+    <div class="step-list" id="offline-step-list">
+
+      <!-- ① 数据加载 -->
+      <div class="step-card" data-stage="offline" data-step="1" data-status="active">
+        <div class="step-header">
+          <span class="step-num-badge offline-num">①</span>
+          <div class="step-info">
+            <h3 class="step-title">数据加载 <span class="step-en">Data Loader</span></h3>
+            <p class="step-desc">从文件系统读取企业文档，转换为纯文本流</p>
+          </div>
+          <span class="step-state-badge state-active">⏳ 待操作</span>
+        </div>
+        <div class="step-body">
+          <div class="action-block">
+            <label class="action-label">1️⃣ 选择要加载的文档类型（可多选）</label>
+            <div class="type-selector">
+              <button class="opt-btn active" data-action="file-type" data-value="pdf">📄 PDF</button>
+              <button class="opt-btn active" data-action="file-type" data-value="docx">📝 Word</button>
+              <button class="opt-btn" data-action="file-type" data-value="md">📋 Markdown</button>
+              <button class="opt-btn" data-action="file-type" data-value="txt">📃 TXT</button>
+              <button class="opt-btn" data-action="file-type" data-value="html">🌐 HTML</button>
+            </div>
+          </div>
+          <div class="action-block">
+            <label class="action-label">2️⃣ 勾选要纳入知识库的文件（至少 1 个）</label>
+            <div class="file-picker">
+              <label class="file-item"><input type="checkbox" data-file checked> <span class="file-icon">📄</span> <span class="file-name">产品手册 v3.2.pdf</span><span class="file-size">2.3MB</span></label>
+              <label class="file-item"><input type="checkbox" data-file checked> <span class="file-icon">📋</span> <span class="file-name">内部 SOP 2024Q4.docx</span><span class="file-size">580KB</span></label>
+              <label class="file-item"><input type="checkbox" data-file checked> <span class="file-icon">📊</span> <span class="file-name">政策汇编 2026.pdf</span><span class="file-size">1.8MB</span></label>
+              <label class="file-item"><input type="checkbox" data-file checked> <span class="file-icon">🎫</span> <span class="file-name">工单 FAQ 库.md</span><span class="file-size">420KB</span></label>
+              <label class="file-item"><input type="checkbox" data-file> <span class="file-icon">📁</span> <span class="file-name">过时的旧版手册 v2.0.pdf</span><span class="file-size">1.2MB</span></label>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <div class="step-hint">💡 提示：PDF 文档包含图片和表格，需要 OCR；HTML 需要解析 DOM</div>
+          <button class="step-complete-btn" data-step="1">✓ 完成加载 · 进入 ② 清洗</button>
+        </div>
+        <div class="step-output" hidden>
+          <div class="output-title">📤 加载结果预览</div>
+          <pre><code>✅ 已加载 4 个文件
+   总字符数：82,341 字
+   总大小：5.1MB
+   最大文件：产品手册 v3.2.pdf（2.3MB · 312 页）
+
+📊 文件类型分布：
+   PDF:   2 个（需要 OCR）
+   Word:  1 个（需要解析表格）
+   MD:    1 个（纯文本，直接用）</code></pre>
+        </div>
+      </div>
+
+      <!-- ② 清洗 -->
+      <div class="step-card locked" data-stage="offline" data-step="2" data-status="locked">
+        <div class="step-header">
+          <span class="step-num-badge offline-num">②</span>
+          <div class="step-info">
+            <h3 class="step-title">数据清洗 <span class="step-en">Cleaning</span></h3>
+            <p class="step-desc">去掉无意义的噪声：HTML 标签、URL、空白行、特殊符号</p>
+          </div>
+          <span class="step-state-badge state-locked">🔒 上锁</span>
+        </div>
+        <div class="step-body">
+          <div class="action-block">
+            <label class="action-label">3️⃣ 选择要应用的清洗规则（开关）</label>
+            <div class="toggle-list">
+              <label class="toggle-item"><input type="checkbox" data-rule checked> <span class="toggle-name">🌐 移除 HTML 标签</span><span class="toggle-desc">如 &lt;div&gt;, &lt;p&gt;</span></label>
+              <label class="toggle-item"><input type="checkbox" data-rule checked> <span class="toggle-name">🔗 移除 URL 链接</span><span class="toggle-desc">如 http://...</span></label>
+              <label class="toggle-item"><input type="checkbox" data-rule checked> <span class="toggle-name">␣ 合并多余空白</span><span class="toggle-desc">多个空格/换行合并</span></label>
+              <label class="toggle-item"><input type="checkbox" data-rule> <span class="toggle-name">📧 移除邮箱</span><span class="toggle-desc">邮箱地址替换为 [EMAIL]</span></label>
+              <label class="toggle-item"><input type="checkbox" data-rule> <span class="toggle-name">📞 移除手机号</span><span class="toggle-desc">11 位手机号脱敏</span></label>
+              <label class="toggle-item"><input type="checkbox" data-rule checked> <span class="toggle-name">🈚 移除特殊字符</span><span class="toggle-desc">非中英文、数字</span></label>
+              <label class="toggle-item"><input type="checkbox" data-rule> <span class="toggle-name">🌍 翻译成中文</span><span class="toggle-desc">英文内容机翻</span></label>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <div class="step-hint">💡 提示：清洗过狠会丢失上下文；清洗太轻噪声太多</div>
+          <button class="step-complete-btn" data-step="2">✓ 完成清洗 · 进入 ③ 切片</button>
+        </div>
+        <div class="step-output" hidden>
+          <div class="output-title">📤 清洗前后对比</div>
+          <div class="clean-diff">
+            <div class="clean-before">
+              <div class="diff-label">❌ 清洗前</div>
+              <pre><code>产品手册 v3.2
+
+<div>第一章  </div>
+&lt;p&gt;介绍&lt;/p&gt;
+
+详见 https://example.com/doc/123
+有问题联系：cain@company.com
+
+    多余的    空格   和   换行
+</code></pre>
+            </div>
+            <div class="clean-arrow">→</div>
+            <div class="clean-after">
+              <div class="diff-label">✅ 清洗后</div>
+              <pre><code>产品手册 v3.2
+
+第一章
+
+介绍
+
+详见[链接]
+有问题联系：[EMAIL]
+
+多余的空格和换行
+</code></pre>
+            </div>
+          </div>
+          <pre class="output-summary"><code>📊 清洗统计：原始 82,341 字 → 清洗后 71,205 字（去噪 13.5%）</code></pre>
+        </div>
+      </div>
+
+      <!-- ③ 切片 -->
+      <div class="step-card locked" data-stage="offline" data-step="3" data-status="locked">
+        <div class="step-header">
+          <span class="step-num-badge offline-num">③</span>
+          <div class="step-info">
+            <h3 class="step-title">文本切片 <span class="step-en">Chunking</span></h3>
+            <p class="step-desc">把长文本切成 200-800 字的小块，每块要保留语义完整</p>
+          </div>
+          <span class="step-state-badge state-locked">🔒 上锁</span>
+        </div>
+        <div class="step-body">
+          <div class="action-block">
+            <label class="action-label">4️⃣ 选择切片策略</label>
+            <div class="strategy-selector">
+              <button class="opt-btn active" data-action="chunk-strategy" data-value="recursive">🔄 递归切片（推荐）</button>
+              <button class="opt-btn" data-action="chunk-strategy" data-value="fixed">📏 固定长度</button>
+              <button class="opt-btn" data-action="chunk-strategy" data-value="semantic">🧠 语义切片</button>
+              <button class="opt-btn" data-action="chunk-strategy" data-value="markdown">📋 按段落切片</button>
+            </div>
+          </div>
+          <div class="action-block">
+            <label class="action-label">5️⃣ 调整切片参数</label>
+            <div class="slider-list">
+              <div class="slider-item">
+                <div class="slider-head">
+                  <span>每片大小</span>
+                  <span class="slider-value"><span id="chunk-size-val">500</span> 字</span>
+                </div>
+                <input type="range" min="100" max="1000" step="50" value="500" class="range-slider" id="chunk-size-slider">
+                <div class="slider-ticks"><span>100</span><span>500</span><span>1000</span></div>
+              </div>
+              <div class="slider-item">
+                <div class="slider-head">
+                  <span>重叠大小</span>
+                  <span class="slider-value"><span id="chunk-overlap-val">50</span> 字</span>
+                </div>
+                <input type="range" min="0" max="200" step="10" value="50" class="range-slider" id="chunk-overlap-slider">
+                <div class="slider-ticks"><span>0</span><span>100</span><span>200</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <div class="step-hint">💡 提示：chunk 太小检索精度高但上下文不足；太大容易引入噪声</div>
+          <button class="step-complete-btn" data-step="3">✓ 完成切片 · 进入 ④ 向量化</button>
+        </div>
+        <div class="step-output" hidden>
+          <div class="output-title">📤 切片预览（仅显示前 5 片）</div>
+          <div class="chunk-list" id="chunk-preview-list"></div>
+          <pre class="output-summary"><code>📊 切片统计：71,205 字 → <span id="chunk-total">142</span> 片，平均每片 501 字</code></pre>
+        </div>
+      </div>
+
+      <!-- ④ 向量化 -->
+      <div class="step-card locked" data-stage="offline" data-step="4" data-status="locked">
+        <div class="step-header">
+          <span class="step-num-badge offline-num">④</span>
+          <div class="step-info">
+            <h3 class="step-title">向量化 <span class="step-en">Embedding</span></h3>
+            <p class="step-desc">把每个 chunk 转成 1024 维的浮点数向量，让语义可计算</p>
+          </div>
+          <span class="step-state-badge state-locked">🔒 上锁</span>
+        </div>
+        <div class="step-body">
+          <div class="action-block">
+            <label class="action-label">6️⃣ 选择 Embedding 模型</label>
+            <div class="model-selector">
+              <label class="model-card">
+                <input type="radio" name="emb-model" value="bge">
+                <div class="model-info">
+                  <div class="model-name">🇨🇳 BGE-large-zh-v1.5</div>
+                  <div class="model-meta">1024 维 · 中文优化 · 开源免费</div>
+                </div>
+                <span class="model-badge recommend">推荐</span>
+              </label>
+              <label class="model-card">
+                <input type="radio" name="emb-model" value="m3e" checked>
+                <div class="model-info">
+                  <div class="model-name">🇨🇳 M3E-base</div>
+                  <div class="model-meta">768 维 · 中文效果好 · 体积小</div>
+                </div>
+                <span class="model-badge">轻量</span>
+              </label>
+              <label class="model-card">
+                <input type="radio" name="emb-model" value="openai">
+                <div class="model-info">
+                  <div class="model-name">🌐 OpenAI text-embedding-3</div>
+                  <div class="model-meta">1536 维 · 跨语言 · 按量付费</div>
+                </div>
+                <span class="model-badge">商用</span>
+              </label>
+              <label class="model-card">
+                <input type="radio" name="emb-model" value="cohere">
+                <div class="model-info">
+                  <div class="model-name">🌐 Cohere embed-multilingual</div>
+                  <div class="model-meta">1024 维 · 100+ 语言</div>
+                </div>
+                <span class="model-badge">多语</span>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <div class="step-hint">💡 提示：模型维度越高越精确，但存储和算力成本越高</div>
+          <button class="step-complete-btn" data-step="4">✓ 完成向量化 · 进入 ⑤ 入库</button>
+        </div>
+        <div class="step-output" hidden>
+          <div class="output-title">📤 向量化结果</div>
+          <pre><code>✅ 已对 <span id="chunk-total-2">142</span> 个 chunk 完成向量化
+   使用模型：<span id="emb-model-name">M3E-base</span>
+   向量维度：<span id="emb-dim">768</span>
+
+🔢 向量示例（chunk #1）：
+   [0.023, -0.145, 0.872, 0.031, ..., -0.456]
+    ↑ 这 768 个数字表达了「年假规定」这段文字的语义</code></pre>
+        </div>
+      </div>
+
+      <!-- ⑤ 入库 -->
+      <div class="step-card locked" data-stage="offline" data-step="5" data-status="locked">
+        <div class="step-header">
+          <span class="step-num-badge offline-num">⑤</span>
+          <div class="step-info">
+            <h3 class="step-title">入库 <span class="step-en">Vector Store</span></h3>
+            <p class="step-desc">把向量 + 原文 + 元数据一起写入向量数据库</p>
+          </div>
+          <span class="step-state-badge state-locked">🔒 上锁</span>
+        </div>
+        <div class="step-body">
+          <div class="action-block">
+            <label class="action-label">7️⃣ 选择向量数据库</label>
+            <div class="db-selector">
+              <label class="db-card">
+                <input type="radio" name="vector-db" value="milvus" checked>
+                <div class="db-icon">🐋</div>
+                <div class="db-info">
+                  <div class="db-name">Milvus</div>
+                  <div class="db-desc">亿级 · 分布式 · 生产首选</div>
+                </div>
+              </label>
+              <label class="db-card">
+                <input type="radio" name="vector-db" value="chroma">
+                <div class="db-icon">📦</div>
+                <div class="db-info">
+                  <div class="db-name">Chroma</div>
+                  <div class="db-desc">轻量 · 本地 · 原型首选</div>
+                </div>
+              </label>
+              <label class="db-card">
+                <input type="radio" name="vector-db" value="qdrant">
+                <div class="db-icon">⚡</div>
+                <div class="db-info">
+                  <div class="db-name">Qdrant</div>
+                  <div class="db-desc">Rust · 高速 · 过滤强</div>
+                </div>
+              </label>
+              <label class="db-card">
+                <input type="radio" name="vector-db" value="pgvector">
+                <div class="db-icon">🐘</div>
+                <div class="db-info">
+                  <div class="db-name">PGVector</div>
+                  <div class="db-desc">PostgreSQL 扩展 · 一体化</div>
+                </div>
+              </label>
+            </div>
+          </div>
+          <div class="action-block">
+            <label class="action-label">8️⃣ 索引元数据（可选）</label>
+            <div class="meta-selector">
+              <label class="meta-chip"><input type="checkbox" data-meta checked> 📁 来源文件名</label>
+              <label class="meta-chip"><input type="checkbox" data-meta checked> 📄 页码</label>
+              <label class="meta-chip"><input type="checkbox" data-meta checked> 🏷️ 文档分类</label>
+              <label class="meta-chip"><input type="checkbox" data-meta> 📅 创建时间</label>
+              <label class="meta-chip"><input type="checkbox" data-meta> 👤 作者</label>
+              <label class="meta-chip"><input type="checkbox" data-meta> 🔖 章节</label>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <div class="step-hint">💡 提示：入库后即可被检索，并支持按元数据过滤</div>
+          <button class="step-complete-btn" data-step="5">✓ 完成入库 · 离线构建结束 → 解锁在线问答</button>
+        </div>
+        <div class="step-output" hidden>
+          <div class="output-title">🎉 离线构建完成</div>
+          <pre><code>✅ 知识库已就绪
+   数据库：<span id="db-name">Milvus</span>
+   向量数：<span id="vec-total">142</span>
+   索引维度：<span id="vec-dim">768</span>
+   元数据：3 个字段已索引
+   构建耗时：模拟 12 秒
+
+🚀 现在可以进入在线问答了！</code></pre>
+          <div class="offline-success">🎉 离线构建完成！下一步将解锁在线 ⑥-⑨</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 在线过程（默认锁定，离线完成后才解锁） -->
+  <div class="rag-stage online locked" id="online-stage">
+    <div class="stage-header">
+      <div class="stage-tag">
+        <span class="stage-badge online-badge">Online · 在线</span>
+        <h3>阶段二 · 实时问答</h3>
+      </div>
+      <p class="stage-desc">用户提问 → 检索向量库 → 拼 Prompt → 调用 LLM 生成答案，每次问答都跑一遍</p>
+      <div class="stage-meta">
+        <span>⏱ 耗时：秒级（端到端）</span>
+        <span>🔁 频率：每次用户提问</span>
+        <span>🎯 进度：<span id="online-progress">0</span>/4</span>
+        <span id="online-locked-hint" class="locked-hint">🔒 需先完成离线 5 步</span>
+      </div>
+    </div>
+
+    <div class="step-list" id="online-step-list">
+
+      <!-- ⑥ Query 向量化 -->
+      <div class="step-card locked" data-stage="online" data-step="6" data-status="locked">
+        <div class="step-header">
+          <span class="step-num-badge online-num">⑥</span>
+          <div class="step-info">
+            <h3 class="step-title">Query 向量化 <span class="step-en">Query Embedding</span></h3>
+            <p class="step-desc">把用户的问题用同一个 Embedding 模型转成向量</p>
+          </div>
+          <span class="step-state-badge state-locked">🔒 上锁</span>
+        </div>
+        <div class="step-body">
+          <div class="action-block">
+            <label class="action-label">9️⃣ 输入用户的问题</label>
+            <div class="query-input-card">
+              <textarea id="user-query-card" class="query-textarea" rows="2">公司年假是怎么规定的？</textarea>
+              <div class="query-presets">
+                <button class="preset-btn" data-q="公司年假是怎么规定的？">年假规则</button>
+                <button class="preset-btn" data-q="如何申请差旅报销？">差旅报销</button>
+                <button class="preset-btn" data-q="产品保修期多久？">保修政策</button>
+                <button class="preset-btn" data-q="如何办理入职手续？">入职流程</button>
+              </div>
+            </div>
+          </div>
+          <div class="action-block">
+            <label class="action-label">🔟 是否做 Query 改写（让检索更准）</label>
+            <div class="rewrite-options">
+              <label class="radio-item"><input type="radio" name="rewrite" value="none" checked> <span>❌ 不改写</span></label>
+              <label class="radio-item"><input type="radio" name="rewrite" value="expand"> <span>✨ 扩展（加同义词）</span></label>
+              <label class="radio-item"><input type="radio" name="rewrite" value="hyde"> <span>🎭 HyDE（假设文档）</span></label>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <div class="step-hint">💡 提示：必须用与离线 ④ 相同的 Embedding 模型，向量空间才一致</div>
+          <button class="step-complete-btn" data-step="6">✓ 完成向量化 · 进入 ⑦ 检索</button>
+        </div>
+        <div class="step-output" hidden>
+          <div class="output-title">📤 Query 向量化结果</div>
+          <pre><code>原始 Query：<span class="user-q-display">公司年假是怎么规定的？</span>
+改写模式：<span id="rewrite-mode">不改写</span>
+使用模型：<span id="emb-model-online">M3E-base</span>
+
+🔢 Query 向量：
+   [0.142, -0.067, 0.523, 0.891, ..., -0.234]
+    ↑ 用与离线相同的模型，维度：<span id="emb-dim-online">768</span></code></pre>
+        </div>
+      </div>
+
+      <!-- ⑦ 检索 -->
+      <div class="step-card locked" data-stage="online" data-step="7" data-status="locked">
+        <div class="step-header">
+          <span class="step-num-badge online-num">⑦</span>
+          <div class="step-info">
+            <h3 class="step-title">向量检索 <span class="step-en">Retrieval</span></h3>
+            <p class="step-desc">在向量库里找与 Query 最相似的 Top-K 个 chunk</p>
+          </div>
+          <span class="step-state-badge state-locked">🔒 上锁</span>
+        </div>
+        <div class="step-body">
+          <div class="action-block">
+            <label class="action-label">1️⃣1️⃣ 设置检索参数</label>
+            <div class="slider-list">
+              <div class="slider-item">
+                <div class="slider-head">
+                  <span>Top-K（召回数）</span>
+                  <span class="slider-value"><span id="topk-val">5</span> 个</span>
+                </div>
+                <input type="range" min="1" max="20" step="1" value="5" class="range-slider" id="topk-slider">
+                <div class="slider-ticks"><span>1</span><span>10</span><span>20</span></div>
+              </div>
+              <div class="slider-item">
+                <div class="slider-head">
+                  <span>相似度阈值</span>
+                  <span class="slider-value">≥ <span id="threshold-val">0.7</span></span>
+                </div>
+                <input type="range" min="0" min-value="0" max="100" step="5" value="70" class="range-slider" id="threshold-slider">
+                <div class="slider-ticks"><span>0.0</span><span>0.5</span><span>1.0</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="action-block">
+            <label class="action-label">1️⃣2️⃣ 选择检索策略</label>
+            <div class="strategy-selector">
+              <button class="opt-btn active" data-action="retrieval" data-value="vector">🎯 纯向量检索</button>
+              <button class="opt-btn" data-action="retrieval" data-value="bm25">📝 纯关键词检索</button>
+              <button class="opt-btn" data-action="retrieval" data-value="hybrid">🔀 混合检索（推荐）</button>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <div class="step-hint">💡 提示：阈值太低会召回到无关内容，太高可能漏召</div>
+          <button class="step-complete-btn" data-step="7">✓ 完成检索 · 进入 ⑧ 拼 Prompt</button>
+        </div>
+        <div class="step-output" hidden>
+          <div class="output-title">📤 检索结果（Top-K = <span id="topk-result">5</span>）</div>
+          <div class="retrieve-list" id="retrieve-list"></div>
+          <pre class="output-summary"><code>📊 检索耗时：模拟 234ms
+   召回：<span id="recall-num">5</span> 个 chunk
+   最高相似度：<span id="max-sim">0.92</span>
+   策略：<span id="retrieval-strategy">向量检索</span></code></pre>
+        </div>
+      </div>
+
+      <!-- ⑧ 拼 Prompt -->
+      <div class="step-card locked" data-stage="online" data-step="8" data-status="locked">
+        <div class="step-header">
+          <span class="step-num-badge online-num">⑧</span>
+          <div class="step-info">
+            <h3 class="step-title">拼 Prompt <span class="step-en">Prompt Assembly</span></h3>
+            <p class="step-desc">把检索结果 + 用户问题按模板组装成最终 Prompt</p>
+          </div>
+          <span class="step-state-badge state-locked">🔒 上锁</span>
+        </div>
+        <div class="step-body">
+          <div class="action-block">
+            <label class="action-label">1️⃣3️⃣ 选择 Prompt 模板</label>
+            <div class="prompt-templates">
+              <label class="prompt-card">
+                <input type="radio" name="prompt-tpl" value="basic" checked>
+                <div class="prompt-name">📋 基础模板</div>
+                <div class="prompt-preview"><code>你是助手。基于以下资料回答问题。
+
+资料：
+{context}
+
+问题：{question}</code></div>
+              </label>
+              <label class="prompt-card">
+                <input type="radio" name="prompt-tpl" value="strict">
+                <div class="prompt-name">🛡️ 严格模板（防幻觉）</div>
+                <div class="prompt-preview"><code>仅基于资料回答，不要编造。
+若资料不足请说"我不知道"。
+
+资料：
+{context}
+
+问题：{question}
+
+回答时标注引用 [1][2]...</code></div>
+              </label>
+              <label class="prompt-card">
+                <input type="radio" name="prompt-tpl" value="friendly">
+                <div class="prompt-name">💬 友好模板</div>
+                <div class="prompt-preview"><code>你是 {persona}，用亲切的口吻回答。
+
+资料：
+{context}
+
+问题：{question}</code></div>
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <div class="step-hint">💡 提示：严格模板适合专业场景，友好模板适合 ToC 客服</div>
+          <button class="step-complete-btn" data-step="8">✓ 完成拼装 · 进入 ⑨ 生成</button>
+        </div>
+        <div class="step-output" hidden>
+          <div class="output-title">📤 最终 Prompt 预览</div>
+          <pre><code id="prompt-final"></code></pre>
+        </div>
+      </div>
+
+      <!-- ⑨ 生成 -->
+      <div class="step-card locked" data-stage="online" data-step="9" data-status="locked">
+        <div class="step-header">
+          <span class="step-num-badge online-num">⑨</span>
+          <div class="step-info">
+            <h3 class="step-title">LLM 生成 <span class="step-en">Generation</span></h3>
+            <p class="step-desc">调用大模型基于 Prompt 流式输出最终答案</p>
+          </div>
+          <span class="step-state-badge state-locked">🔒 上锁</span>
+        </div>
+        <div class="step-body">
+          <div class="action-block">
+            <label class="action-label">1️⃣4️⃣ 选择 LLM 模型</label>
+            <div class="llm-selector">
+              <label class="llm-card">
+                <input type="radio" name="llm-model" value="gpt-4" checked>
+                <div class="llm-name">🤖 GPT-4o</div>
+                <div class="llm-desc">OpenAI · 综合能力强</div>
+              </label>
+              <label class="llm-card">
+                <input type="radio" name="llm-model" value="claude">
+                <div class="llm-name">🧠 Claude 3.5</div>
+                <div class="llm-desc">Anthropic · 长文本强</div>
+              </label>
+              <label class="llm-card">
+                <input type="radio" name="llm-model" value="qwen">
+                <div class="llm-name">🇨🇳 通义千问</div>
+                <div class="llm-desc">阿里 · 中文场景优</div>
+              </label>
+              <label class="llm-card">
+                <input type="radio" name="llm-model" value="deepseek">
+                <div class="llm-name">🚀 DeepSeek-V3</div>
+                <div class="llm-desc">深度求索 · 性价比</div>
+              </label>
+            </div>
+          </div>
+          <div class="action-block">
+            <label class="action-label">1️⃣5️⃣ 生成参数</label>
+            <div class="slider-list">
+              <div class="slider-item">
+                <div class="slider-head">
+                  <span>Temperature（创意度）</span>
+                  <span class="slider-value"><span id="temp-val">0.3</span></span>
+                </div>
+                <input type="range" min="0" max="100" step="5" value="30" class="range-slider" id="temp-slider">
+                <div class="slider-ticks"><span>0 精确</span><span>0.5</span><span>1 创意</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer">
+          <div class="step-hint">💡 提示：RAG 场景建议 Temperature ≤ 0.5，避免幻觉</div>
+          <button class="step-complete-btn" data-step="9">✓ 完成生成 · 观看最终答案</button>
+        </div>
+        <div class="step-output final-output" hidden>
+          <div class="output-title">🎉 最终答案</div>
+          <div class="final-answer">
+            <div class="answer-q">❓ 问题：<span class="user-q-final">公司年假是怎么规定的？</span></div>
+            <div class="answer-a" id="final-answer-content"></div>
+            <div class="answer-citations" id="final-citations"></div>
+          </div>
+          <div class="completion-banner">
+            🎊 <strong>完整 RAG 流程演示结束！</strong><br>
+            你已经手动走完了 <strong>9 步</strong>：5 步离线构建 + 4 步在线问答。<br>
+            点击「全部重置」可重新体验，或修改任意步骤的配置观察对结果的影响。
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    </div><!-- /flow-main -->
+  </div><!-- /flow-layout -->
+
+  <!-- 数据飞轮 -->
+  <div class="rag-flywheel">
+    <div class="flywheel-content">
+      <div class="flywheel-icon">🔄</div>
+      <div class="flywheel-text">
+        <strong>数据飞轮（Data Flywheel）</strong>
+        <p>用户反馈 → 评估 → 优化 → 知识库更新 → 重新走离线过程 → 检索质量提升</p>
+      </div>
+    </div>
+    <svg class="flywheel-svg" viewBox="0 0 600 40">
+      <defs>
+        <marker id="fly-arrow" viewBox="0 0 10 10" refX="8" refY="5"
+          markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+      <path d="M 20 20 Q 290 -20 580 20" fill="none" stroke="rgba(168,85,247,0.6)"
+        stroke-width="2" stroke-dasharray="6,4" marker-end="url(#fly-arrow)"/>
+    </svg>
+  </div>
+</section>
+
+
+<!-- 四、RAG 8 件套 -->
+<section id="components" class="section" data-page-node-id="TVWfkxUiwNNoAeGIgYcTvh">
+  <div class="section-head" data-page-node-id="AEvGGBZaGyLtaNLyLnvkYA">
+    <span class="section-num" data-page-node-id="4EBvTSJJonLXasCTq5oDm1">04</span>
+    <h2 data-page-node-id="HxmbCYnXIbKWaFrraIo2ch">RAG 8 件套 · 搭建一个生产级系统的必备组件</h2>
+    <p data-page-node-id="JrcucdZwF6TE6uJWgScsM2">每一个组件都有 3-5 个主流选型 · 鼠标悬停查看详情</p>
+  </div>
+  <div class="component-grid" data-page-node-id="v7ahe5MNbn1LrH3nJQVCRn">
+    <div class="component-card" data-tip="用 LLM 改写用户口语化提问，比如'咋退款'→'如何申请退款，退款时效是多久'。常用技术：Multi-Query、HyDE、Step-Back Prompting。" data-page-node-id="GANnCE3jDzWPTdF3tzvo3C">
+      <div class="comp-num" data-page-node-id="ImBoZF61zrHw5J6Dwk8tHy">01</div>
+      <div class="comp-icon" data-page-node-id="7rGiQWLqT0ukHATbG3r3bZ">✏️</div>
+      <h3 data-page-node-id="9c7H5g7AN5jZTw1mI5hk8t">Query 改写器</h3>
+      <p data-page-node-id="FIeZ3yzwKG8oFDE1AaknXw">把用户的口语化提问改写成适合检索的查询</p>
+      <div class="comp-tags" data-page-node-id="xm0iCGO661C554e9Bs7wXg"><span class="tag" data-page-node-id="nysHNAyl8hspujlcVgy7sW">Multi-Query</span><span class="tag" data-page-node-id="Rj3DBlaywr1cDmcgAXDzhE">HyDE</span><span class="tag" data-page-node-id="IaaIV7ogDtHAvQcDRFPumg">Step-Back</span></div>
+    </div>
+    <div class="component-card" data-tip="把文本变成稠密向量，捕获语义信息。中文推荐 BGE-large-zh、M3E；英文用 text-embedding-3-small、bge-en。" data-page-node-id="wqIPYhO2WDHGne7yp8EkTG">
+      <div class="comp-num" data-page-node-id="spiSu3T8rQF5Aja8O8QwRq">02</div>
+      <div class="comp-icon" data-page-node-id="1ewIvyeEDL0nSGPqqccIZA">🧮</div>
+      <h3 data-page-node-id="2PHwNIAQ1RHND4jlU3bf3X">Embedding 模型</h3>
+      <p data-page-node-id="DX2Dd1tk4rEB5kXk53H0Go">把文本变成 768~3072 维的稠密向量</p>
+      <div class="comp-tags" data-page-node-id="LijMP07JIbmOKytZwd5NmW"><span class="tag" data-page-node-id="EQDaaFE4Hwdqgda0WgjX0S">BGE</span><span class="tag" data-page-node-id="zqoVFSjqxLOtMKDaLNUL1y">M3E</span><span class="tag" data-page-node-id="eiVwGcxr4HHVv03qKpIjuo">OpenAI Ada</span></div>
+    </div>
+    <div class="component-card" data-tip="存储向量并支持相似度检索。开源选 Milvus/Qdrant/Chroma；云服务选 Pinecone/Zilliz/腾讯 VectorDB。" data-page-node-id="X6Q1RR4Y5xNGp8GjFZja4Y">
+      <div class="comp-num" data-page-node-id="eGoS0NhJ6hgApZ9PztraNz">03</div>
+      <div class="comp-icon" data-page-node-id="c3JLaNuZFgZpkd9qXfO2Uv">📦</div>
+      <h3 data-page-node-id="PABY21dS2VDi4EW2RN13r1">向量数据库</h3>
+      <p data-page-node-id="h5nz6YYFHLXunuRcqkjHTZ">存 Embedding，支持毫秒级相似度检索</p>
+      <div class="comp-tags" data-page-node-id="LbvNdlghbBeNGqhGCPTCBB"><span class="tag" data-page-node-id="DChZwQQ2vUnvhAqYW4Z8dy">Milvus</span><span class="tag" data-page-node-id="Od4SjpbIVDG69AuqcDU5Uk">Qdrant</span><span class="tag" data-page-node-id="OZWNF1gZjHBXrSZtILPH8z">PGVector</span></div>
+    </div>
+    <div class="component-card" data-tip="实际执行检索的逻辑层。向量检索找语义相似，BM25 找关键词命中，生产环境 80% 用混合检索。" data-page-node-id="RHC7dRU83eagRDHFGktFnm">
+      <div class="comp-num" data-page-node-id="myDLqpxRmZRlLlV9ixmdmA">04</div>
+      <div class="comp-icon" data-page-node-id="2XxicHHo7GTdJCChCzNSEh">🔍</div>
+      <h3 data-page-node-id="GJGDDiCkJ87DRhafL3AeZ0">检索器</h3>
+      <p data-page-node-id="dIOyJJgsn3EIfYgv2kuwnK">执行"找资料"动作，支持向量/关键词/混合</p>
+      <div class="comp-tags" data-page-node-id="VuXqp7aBG0GGPwLBU0nDvi"><span class="tag" data-page-node-id="jdjshmuOfZA3OiOfZytEoo">向量</span><span class="tag" data-page-node-id="iaLDhaWRxrveFfmNCXxx5K">BM25</span><span class="tag" data-page-node-id="daTYXjEldGGOCHixYsTKxY">Hybrid</span></div>
+    </div>
+    <div class="component-card" data-tip="用 Cross-Encoder 模型对初排结果重打分。比 Bi-Encoder 慢但准得多，是 RAG 提准的关键一步。" data-page-node-id="jZLyHqEAaxVDuEgpHOUeAO">
+      <div class="comp-num" data-page-node-id="F1Z0LMshkPIBL3FYgsVSX0">05</div>
+      <div class="comp-icon" data-page-node-id="wrJbBNeQATcf2W7cp1qr9v">🎯</div>
+      <h3 data-page-node-id="ZFCMp9awFcgTxqcGHPixNp">Reranker</h3>
+      <p data-page-node-id="srpCJAXeFuvcQGUBLEcsya">对初排 TopK 精排，把最相关的顶到第一位</p>
+      <div class="comp-tags" data-page-node-id="0skx32rVSrWgwdlhT4FCtH"><span class="tag" data-page-node-id="bJ0ABzDykjUi0SgLEA8yqg">BGE-Reranker</span><span class="tag" data-page-node-id="UN75NvTAlp36hcz2mVuKQR">Cohere</span><span class="tag" data-page-node-id="aXbOYwfATLTBxKmmiKjGmg">Jina</span></div>
+    </div>
+    <div class="component-card" data-tip="把检索结果按模板拼进 Prompt。模板决定答案的格式、语气、引用风格，是产品差异化的核心。" data-page-node-id="MTC4y1wywV8alHc0LnL5Sw">
+      <div class="comp-num" data-page-node-id="LmK5YQZfIFE5fYMliDbfYz">06</div>
+      <div class="comp-icon" data-page-node-id="yiD3CUzBvsHHNUyK6OMRxY">📝</div>
+      <h3 data-page-node-id="1zFOkBhGtAIWo2tYo4PbxH">Prompt 模板</h3>
+      <p data-page-node-id="u8D1Un6fVXXnGUAAmL8fmC">拼接 System + Context + User Query</p>
+      <div class="comp-tags" data-page-node-id="7zRJbo8jjl4NFf6oxAAOBu"><span class="tag" data-page-node-id="tIR2AgLNeEeAh32WviPftJ">Few-shot</span><span class="tag" data-page-node-id="LIsC5alwKcBPk7nVVgCpdI">CoT</span><span class="tag" data-page-node-id="kvgDuTGb0qcJoKi53pxFBH">ReAct</span></div>
+    </div>
+    <div class="component-card" data-tip="实际生成答案的大模型。生产环境通常多模型路由：简单问题用小模型（快/省），复杂问题用大模型（准/贵）。" data-page-node-id="1MicAKOz3HwvpDgPwZSHts">
+      <div class="comp-num" data-page-node-id="7c9D3So6rg30S0ARzb0AEg">07</div>
+      <div class="comp-icon" data-page-node-id="eQk8qDLYHwI88KfyJNWTrQ">🤖</div>
+      <h3 data-page-node-id="fezTKkHW9EE4HWFf7NMvsl">LLM</h3>
+      <p data-page-node-id="lP9k0WQNieQTOC0jJxPSY5">最终生成答案的核心推理引擎</p>
+      <div class="comp-tags" data-page-node-id="lQszfOVZwAIk1CbnymZImC"><span class="tag" data-page-node-id="LFz8HkNFsCW767cP9LoPGX">GPT-4o</span><span class="tag" data-page-node-id="b6VahneFooWsbi9tEII7DR">Claude</span><span class="tag" data-page-node-id="pWQ1VCtXcoS5l8zVaOepxx">Qwen</span></div>
+    </div>
+    <div class="component-card" data-tip="用 RAGAS/ARES 等框架量化系统质量。核心指标：忠实度、答案相关性、上下文精确率、上下文召回率。" data-page-node-id="sxaLQgZtTUxHMVg6PURryK">
+      <div class="comp-num" data-page-node-id="pnWu9ZA2lYJnJZIw6DzUzY">08</div>
+      <div class="comp-icon" data-page-node-id="4VJDmGwS4CY0FNw8ncY6ok">📊</div>
+      <h3 data-page-node-id="g3CjBVrvpyaCxVNbLj1j3D">评估体系</h3>
+      <p data-page-node-id="3XF6hcFIORp5IPYHzPhJ5z">用指标量化系统质量，建立迭代闭环</p>
+      <div class="comp-tags" data-page-node-id="fYWF4bTTrkDJod3yW3tlWI"><span class="tag" data-page-node-id="pBfwGqfKAM563aHnOljWVr">RAGAS</span><span class="tag" data-page-node-id="U2A0tT5ij0x4tw0LgzaZON">ARES</span><span class="tag" data-page-node-id="wgSmAnrXxLhAVvjnNyvwzA">人工评估</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 五、进阶 RAG -->
+<section id="advanced" class="section section-alt" data-page-node-id="NtJgqsDavxSMGlL5D9uYB3">
+  <div class="section-head" data-page-node-id="DDiCmzrpc2pnBt2IOPZJ9A">
+    <span class="section-num" data-page-node-id="PU53SrKQNlGFJ5hvg4wZ6w">05</span>
+    <h2 data-page-node-id="VCcdPsIXYp8zWUqJFwXTE3">进阶 RAG · 当基础 RAG 不够用时</h2>
+    <p data-page-node-id="9xiFwualGoeOlYdED1f7nL">从 Naive RAG → Advanced RAG → Modular RAG 的进化路径</p>
+  </div>
+  <div class="advanced-timeline" data-page-node-id="qG0uHEOhxD8FiSSnmubTPr">
+    <div class="timeline-track" data-page-node-id="jAa1xR4ZVcyalwHwtjqO2Q">
+      <div class="timeline-node" data-page-node-id="z1BJqMrgmZuZ9sKVTcGJBA">
+        <div class="tl-badge" data-page-node-id="VBwvJY5HNTTBnsvC5AUCss">L1</div>
+        <h4 data-page-node-id="09AS4yQV0GePpHcqPgHA12">Naive RAG</h4>
+        <p data-page-node-id="Bci2Ci1WEoFJQlya8lxfK5">最朴素的「问 → 检索 → 答」，适合 MVP 验证</p>
+        <ul data-page-node-id="OcSsDDuJOQk4u8gVXrpypy">
+          <li data-page-node-id="fWRsXqDIcFyF7CUyyjPUtI">Query 直接 Embedding</li>
+          <li data-page-node-id="9nJrBXngvtPBcIPLtMC5nB">向量检索 Top5</li>
+          <li data-page-node-id="hChL1pJM5hzEOY5uQeBZW4">塞进 Prompt 直接问</li>
+        </ul>
+      </div>
+      <div class="timeline-node highlight" data-page-node-id="MgpZxmBTrajhsDLDAG7ucC">
+        <div class="tl-badge" data-page-node-id="dVNSNR7iHmZUHqxEJPTjBe">L2</div>
+        <h4 data-page-node-id="ItLiBOcc2rBAncTWqgmc7v">Advanced RAG</h4>
+        <p data-page-node-id="5s36vYheKBMxDtrdPCWnq8">加入改写、HyDE、Rerank、混合检索，准确率提升 30-50%</p>
+        <ul data-page-node-id="t37X7JFnXS6e7pfyVdPc21">
+          <li data-page-node-id="8LyWKn9NWpFEXi83711z6I">Query 预处理（改写/扩展）</li>
+          <li data-page-node-id="a589D5RGEYkG7G4iAeCYeE">Hybrid 检索（向量+BM25）</li>
+          <li data-page-node-id="sFhvhcPo8nMFrXLs39Etpq">Cross-Encoder Rerank</li>
+          <li data-page-node-id="gp3UBR9Ojrtm2Q93vNU2jc">元数据过滤</li>
+        </ul>
+      </div>
+      <div class="timeline-node highlight" data-page-node-id="nABCXlBd7A9oEmwmExR1EH">
+        <div class="tl-badge" data-page-node-id="PYAZUDpVjIiTU2NfwVZJ5y">L3</div>
+        <h4 data-page-node-id="2gGgYfQM1u3B1GYqwUQCSL">Modular RAG</h4>
+        <p data-page-node-id="wSK7bwUiVwjJmBnWAQ6Wv1">把 RAG 拆成可插拔模块，按场景灵活组装</p>
+        <ul data-page-node-id="1fI9iODCnaq3VpNCYsczBN">
+          <li data-page-node-id="mVIPm3XGL2LNHrdW5DjE84">检索前/中/后模块化</li>
+          <li data-page-node-id="NFmNNMVCfdoANQZY7DOiQ6">支持多源异构数据</li>
+          <li data-page-node-id="5beqa95e60PWuVFYf6oxIW">可插拔 Reranker/Reader</li>
+        </ul>
+      </div>
+      <div class="timeline-node top" data-page-node-id="4unKueL0og6U6nCqXaCQ9R">
+        <div class="tl-badge" data-page-node-id="g6030QzlVSqx5XEKFWbYZq">L4</div>
+        <h4 data-page-node-id="GqhFyhk4R2ECn9dBVeTNBW">Agentic RAG</h4>
+        <p data-page-node-id="i7fNSOxZlYgPFryXfMedPe">Agent 自己决定要不要检索、检索几次、用什么工具</p>
+        <ul data-page-node-id="uHKVShb2qgJgZ0YLhx8MRD">
+          <li data-page-node-id="uEFF2SeIL7RgC0Y9n5iWqM">Self-RAG：模型自评检索必要性</li>
+          <li data-page-node-id="KmicqdLtuMhads2I5ZhDv9">CRAG：检索质量评估 + 改写</li>
+          <li data-page-node-id="HrUFKCNaQMGDC0AzoUNe9A">Multi-Agent：多个专家协作</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="advanced-grid" data-page-node-id="JJkUgFw8T3jyVY5GjBzSYW">
+    <div class="adv-card" data-page-node-id="Djtkg4v6MMbzYeAMfywiQB">
+      <div class="adv-emoji" data-page-node-id="2CUb8x9FC43pteEfHcIACP">🔮</div>
+      <h4 data-page-node-id="LeWSuPOpcIPeZiKloFh6z6">HyDE（Hypothetical Document Embeddings）</h4>
+      <p data-page-node-id="howrPH2nVabxvU3NeD7Nfb">让 LLM 先"假设性"地写一段答案，再把这段答案去检索。绕过 Query 和文档的语义鸿沟。</p>
+      <code class="adv-code" data-page-node-id="y9CBLTiMmVFmazRha7C6Jp">Query → LLM(假设答案) → Embedding → 检索</code>
+    </div>
+    <div class="adv-card" data-page-node-id="vkxWCQkCgcuLBtI3YBjn7a">
+      <div class="adv-emoji" data-page-node-id="PmKoO1JCBiiFfUm4s8oED3">🪞</div>
+      <h4 data-page-node-id="0ByABbmXxseZBDoFD6yuDT">Self-RAG</h4>
+      <p data-page-node-id="MbtJOk7DzVNPjYAMU6XvC1">模型自己加 4 类特殊 token：[Retrieve]、[IsRel]、[IsSup]、[IsUse]，决定要不要检索、检索结果是否相关、答案是否有依据。</p>
+      <code class="adv-code" data-page-node-id="W8KdLY6LO05flkmv1FXoCR">Self-RAG = 检索决策 + 反思 + 引用</code>
+    </div>
+    <div class="adv-card" data-page-node-id="oh0Cg1RTRYuFinMh5LYhpp">
+      <div class="adv-emoji" data-page-node-id="HLO9K1nEuAnidIv5zYcSEL">🛠️</div>
+      <h4 data-page-node-id="GNcKJCNmGiNimeKCNr8Olp">Corrective RAG (CRAG)</h4>
+      <p data-page-node-id="dt6eAa7CICNS5zLOHq5lim">检索后立刻评估文档质量（Correct/Incorrect/Ambiguous），必要时触发 Web 搜索兜底。</p>
+      <code class="adv-code" data-page-node-id="nOAH3IdiI9digTYlCoUSJQ">检索 → 评估 → 不行就换源</code>
+    </div>
+    <div class="adv-card" data-page-node-id="ZQIUPP8LLiailmey60QEFS">
+      <div class="adv-emoji" data-page-node-id="pzx9HOqHWaqWhMRmMMSmlp">🕸️</div>
+      <h4 data-page-node-id="ZdyYtUGXjdXhlpRsQfQPWp">GraphRAG</h4>
+      <p data-page-node-id="WnOhFIFnp9OA3DOfwiOnHu">用知识图谱替代扁平文档，把实体和关系建图。微软开源项目，适合"全局性问题"（如"公司整体战略"）。</p>
+      <code class="adv-code" data-page-node-id="VX8CAYwLqGyAwu5flSGqQS">文档 → 实体抽取 → 关系建图 → 图检索</code>
+    </div>
+    <div class="adv-card" data-page-node-id="khCJFDS28dC4Xhcln3a9DC">
+      <div class="adv-emoji" data-page-node-id="Gycp5HJK8pqOi7MSXmbCLi">🔁</div>
+      <h4 data-page-node-id="BetVBIXEYeDZMzdLghaTs2">Multi-Query / Multi-Step</h4>
+      <p data-page-node-id="kgUEQqtPAAYdNvBIytz0C7">一个问题拆成多个子问题分别检索，再合并答案；或者多轮检索逐步逼近真相。</p>
+      <code class="adv-code" data-page-node-id="yXD8gKxDreFGiGkmFkWCUm">Q → [Q1, Q2, Q3] → 分别检索 → 合并</code>
+    </div>
+    <div class="adv-card" data-page-node-id="2x6V1TETFW3CQ5vRAwzTCE">
+      <div class="adv-emoji" data-page-node-id="G5bNvJdExkOxBV5Au5snMV">📦</div>
+      <h4 data-page-node-id="YnvehWVG0Z2SXka9kXr23n">Long-Context RAG</h4>
+      <p data-page-node-id="uDojgHK0HJOS9OCX9fQuDr">当上下文窗口足够大（200K+），直接把 TopK 文档全部塞进去，跳过 Rerank 也能拿到不错效果。</p>
+      <code class="adv-code" data-page-node-id="a4F3WA2GOfmPahRpETYH91">检索 Top20 → 不 Rerank → 全部塞 LLM</code>
+    </div>
+  </div>
+</section>
+
+<!-- 六、代码示例 -->
+<section id="code" class="section" data-page-node-id="gAmhxIqBHzadESDBCQLqUH">
+  <div class="section-head" data-page-node-id="xwU1UCNiWGzwMqWyFiJKtI">
+    <span class="section-num" data-page-node-id="M0SYwSt4oOZHZXFSCf1MS2">06</span>
+    <h2 data-page-node-id="z3uxF8j0CINpuqb6D0NvJ5">5 分钟搭一个 RAG · 最简可运行代码</h2>
+    <p data-page-node-id="HrXOn9Jd0MsFQUUylM6CO3">基于 LangChain + Chroma + OpenAI · 复制即可跑</p>
+  </div>
+
+  <div class="code-tabs" data-page-node-id="TuAIlAImRCYawu3PKnjAY9">
+    <button class="tab-btn active" data-tab="langchain" data-page-node-id="1qq6HnCf6nQxKDYNHZBKCm">Python · LangChain</button>
+    <button class="tab-btn" data-tab="raw" data-page-node-id="yZgoYNNbLq6bMQ0DHm7tqC">极简版 · 50 行</button>
+    <button class="tab-btn" data-tab="advance" data-page-node-id="iOP1o7BiVHkUloyoNSkFRR">进阶版 · 含 Rerank</button>
+  </div>
+
+  <div class="code-panel active" data-panel="langchain" data-page-node-id="NGxn4859ZmNXBqva28LgiW">
+<pre data-page-node-id="oeMCpL2H2Ic5QYMeAoxdZy"><code class="language-python" data-page-node-id="4rDU8SH3oipClbG20SQGTJ">"""
+RAG 最小可用示例 - 基于 LangChain
+前置：pip install langchain langchain-openai langchain-chroma chromadb
+"""
+from langchain_openai import OpenAIEmbeddings, ChatOpenAI
+from langchain_chroma import Chroma
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import TextLoader
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.runnables import RunnablePassthrough
+
+# ========== 1. 文档加载 ==========
+loader = TextLoader("company_handbook.txt", encoding="utf-8")
+docs = loader.load()
+
+# ========== 2. 文档切分 ==========
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=500,    # 每块 500 字
+    chunk_overlap=50,  # 块之间重叠 50 字
+)
+chunks = splitter.split_documents(docs)
+
+# ========== 3. 向量化 + 入库 ==========
+embeddings = OpenAIEmbeddings(model="text-embedding-3-small")
+vectorstore = Chroma.from_documents(chunks, embeddings)
+
+# ========== 4. 检索器 ==========
+retriever = vectorstore.as_retriever(
+    search_type="similarity",
+    search_kwargs={"k": 4}  # 取 Top4
+)
+
+# ========== 5. Prompt 模板 ==========
+template = """你是一个专业的企业知识助手。请基于【参考资料】回答用户问题。
+如果资料里没有答案，请诚实地说"我不确定"，不要编造。
+
+【参考资料】
+{context}
+
+【用户问题】
+{question}
+
+【回答】"""
+prompt = ChatPromptTemplate.from_template(template)
+
+# ========== 6. 组装 RAG 链 ==========
+llm = ChatOpenAI(model="gpt-4o-mini", temperature=0)
+
+rag_chain = (
+    {"context": retriever, "question": RunnablePassthrough()}
+    | prompt
+    | llm
+)
+
+# ========== 7. 提问 ==========
+answer = rag_chain.invoke("公司年假是怎么规定的？")
+print(answer.content)
+</code></pre>
+  </div>
+
+  <div class="code-panel" data-panel="raw" data-page-node-id="7ik6Yijykjf1PcBE2mM7oo">
+<pre data-page-node-id="nGnVjtdek46mXNh8tjJUBc"><code class="language-python" data-page-node-id="31cHw3ZOf9t3nHCuyDyutz">"""
+极简版 RAG · 不依赖任何框架 · 50 行讲透原理
+"""
+import numpy as np
+from openai import OpenAI
+
+client = OpenAI()
+
+# ========== 1. 准备"知识库" ==========
+docs = [
+    "公司年假：工作满 1 年 5 天，满 3 年 10 天，满 5 年 15 天",
+    "报销标准：经济舱机票可全额报销，酒店限 500 元/晚",
+    "远程办公：每周三、五可申请，需提前 1 天报备",
+]
+
+# ========== 2. 把文档 Embedding ==========
+doc_embeds = []
+for d in docs:
+    emb = client.embeddings.create(model="text-embedding-3-small", input=d)
+    doc_embeds.append(emb.data[0].embedding)
+
+# ========== 3. 用户提问 → Embedding → 算相似度 ==========
+def retrieve(query, top_k=2):
+    q_emb = client.embeddings.create(
+        model="text-embedding-3-small", input=query
+    ).data[0].embedding
+
+    # 余弦相似度
+    scores = [
+        np.dot(q_emb, de) / (np.linalg.norm(q_emb) * np.linalg.norm(de))
+        for de in doc_embeds
+    ]
+    top_idx = np.argsort(scores)[::-1][:top_k]
+    return [(docs[i], scores[i]) for i in top_idx]
+
+# ========== 4. Prompt 组装 ==========
+def rag(query):
+    hits = retrieve(query)
+    context = "\n".join([f"- {d}" for d, _ in hits])
+    prompt = f"基于以下资料回答问题：\n{context}\n\n问题：{query}\n回答："
+    resp = client.chat.completions.create(
+        model="gpt-4o-mini",
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return resp.choices[0].message.content, hits
+
+# ========== 5. 测试 ==========
+answer, refs = rag("我工作了 3 年，能休几天年假？")
+print("📌 回答：", answer)
+print("📎 引用：", refs)
+</code></pre>
+  </div>
+
+  <div class="code-panel" data-panel="advance" data-page-node-id="o5Caqx4WThXdd4eym3sX04">
+<pre data-page-node-id="KiWsQs48lEDC7gQaBvblkA"><code class="language-python" data-page-node-id="VWFB9K0DbsS3aZJcktMOCK">"""
+进阶版 RAG · 加入 Rerank + Query 改写 + 混合检索
+"""
+from langchain.retrievers import EnsembleRetriever, ContextualCompressionRetriever
+from langchain.retrievers.document_compressors import CohereRerank
+from langchain_community.retrievers import BM25Retriever
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_chroma import Chroma
+from langchain_core.prompts import ChatPromptTemplate
+
+# ========== 1. 向量检索 ==========
+vectorstore = Chroma.from_documents(chunks, OpenAIEmbeddings())
+vector_retriever = vectorstore.as_retriever(search_kwargs={"k": 10})
+
+# ========== 2. BM25 关键词检索 ==========
+bm25_retriever = BM25Retriever.from_documents(chunks)
+bm25_retriever.k = 10
+
+# ========== 3. 混合检索（RRF 加权融合） ==========
+hybrid = EnsembleRetriever(
+    retrievers=[vector_retriever, bm25_retriever],
+    weights=[0.6, 0.4]   # 向量检索权重 0.6，BM25 权重 0.4
+)
+
+# ========== 4. 加 Rerank 精排 ==========
+compressor = CohereRerank(model="rerank-multilingual-v3.0", top_n=4)
+retriever = ContextualCompressionRetriever(
+    base_compressor=compressor, base_retriever=hybrid
+)
+
+# ========== 5. Query 改写（可选） ==========
+rewrite_prompt = ChatPromptTemplate.from_messages([
+    ("system", "把用户问题改写成 3 个不同角度的检索查询，每行一个，不要编号。"),
+    ("human", "{question}")
+])
+rewriter = rewrite_prompt | ChatOpenAI(model="gpt-4o-mini")
+
+def multi_query_retrieve(question):
+    queries = rewriter.invoke({"question": question}).content.split("\n")
+    all_docs = []
+    for q in queries:
+        all_docs.extend(retriever.invoke(q))
+    # 去重
+    seen = set()
+    return [d for d in all_docs if not (d.page_content in seen or seen.add(d.page_content))]
+
+# ========== 6. 完整 RAG 链 ==========
+template = """你是企业知识助手。请基于【参考资料】回答，每条结论标注引用编号 [1][2]。
+
+【参考资料】
+{context}
+
+【问题】
+{question}"""
+
+docs = multi_query_retrieve("公司年假规定是什么？")
+context = "\n\n".join([f"[{i+1}] {d.page_content}" for i, d in enumerate(docs)])
+
+llm = ChatOpenAI(model="gpt-4o")
+answer = llm.invoke(template.format(context=context, question="公司年假规定是什么？"))
+print(answer.content)
+</code></pre>
+  </div>
+</section>
+
+<!-- 七、评估 -->
+<section id="eval" class="section section-alt" data-page-node-id="Vu1h90CIEFiOHwKlq5HprL">
+  <div class="section-head" data-page-node-id="D8nve1H0uCjQES0SBdDCei">
+    <span class="section-num" data-page-node-id="c5DAQuqmQAepGhRvGpP77u">07</span>
+    <h2 data-page-node-id="qITQAV8IPfmsEYXhqbZaUi">评估体系 · 没有指标的 RAG 就是在裸奔</h2>
+    <p data-page-node-id="SHntUmPMUb6Cmn0dQyzHar">RAGAS 四件套 · 上线前必须跑通</p>
+  </div>
+
+  <div class="eval-grid" data-page-node-id="a1HzmXls1t24lhn9M1mk5c">
+    <div class="eval-card" data-page-node-id="fYKOFc2V0PCFz2BXv2HFoD">
+      <div class="eval-icon" data-page-node-id="7HElAqq3qHw2tfDAay6R0s">🎯</div>
+      <h3 data-page-node-id="HtEpybd3ioBHQZVOZgQTGs">Faithfulness 忠实度</h3>
+      <p data-page-node-id="AeTSJJnjrCXT6AFzYOTEzH">答案的每句话是否都能在检索资料里找到依据？</p>
+      <div class="eval-bar" data-page-node-id="etG6P3mNkI5xSxMOVh8DiT"><div class="eval-fill" style="width:92%" data-page-node-id="hpSs1Tr6Sg4yPaHrVVjCu4"></div></div>
+      <div class="eval-target" data-page-node-id="NWseOuoEpFMyjGgnfI51Vo">目标：&gt; 0.9</div>
+    </div>
+    <div class="eval-card" data-page-node-id="xvOotZMCYnNI0PlrhYcvNw">
+      <div class="eval-icon" data-page-node-id="IjBTJDxD8sV9RVmhx5qIj3">🎪</div>
+      <h3 data-page-node-id="fGVsCQMrnu5bmUf3vMhFfA">Answer Relevancy 答案相关性</h3>
+      <p data-page-node-id="FBZFczdkAyxywjH2JsR6GN">回答是否切题？是否解决了用户的真实问题？</p>
+      <div class="eval-bar" data-page-node-id="Iv20RTNu7QX3LS5aIgASu8"><div class="eval-fill" style="width:85%" data-page-node-id="4bACVALVnFyz0YWYGffsIq"></div></div>
+      <div class="eval-target" data-page-node-id="fwQ0E3Fk7xAWjrqPSOKbsf">目标：&gt; 0.85</div>
+    </div>
+    <div class="eval-card" data-page-node-id="Pet1YL1WYg6sOl4KEQy5fS">
+      <div class="eval-icon" data-page-node-id="8GMuWtoLyARw71gLT61ita">🔬</div>
+      <h3 data-page-node-id="1SAZLK60TdS3aiCwB6DxjB">Context Precision 上下文精确率</h3>
+      <p data-page-node-id="RmRpAx6YA8KICscuQKJEjK">检索到的 TopK 中，真正相关的占多少？</p>
+      <div class="eval-bar" data-page-node-id="qVqMeSunC8FCzgA0J5SGo0"><div class="eval-fill" style="width:78%" data-page-node-id="5H58qxepHDlar2KHhumHHa"></div></div>
+      <div class="eval-target" data-page-node-id="KgGctZKf4dpvZ23EGUUFO6">目标：&gt; 0.8</div>
+    </div>
+    <div class="eval-card" data-page-node-id="CE714pbmUHLNP8giJBoEOO">
+      <div class="eval-icon" data-page-node-id="SD2zvvTX9BrWBqjPcvT99i">🔭</div>
+      <h3 data-page-node-id="x0SfoGvG4IAs8uc9mM0MN7">Context Recall 上下文召回率</h3>
+      <p data-page-node-id="ApmG2MWtfTT0GsE4DWeUJj">回答问题所需的全部资料中，被检索到了多少？</p>
+      <div class="eval-bar" data-page-node-id="o60HHZsWWLfbRYelnRu8Fv"><div class="eval-fill" style="width:82%" data-page-node-id="fWQaYc1Cpr9zcpgra1Cwoo"></div></div>
+      <div class="eval-target" data-page-node-id="wY6QAbECXy4rSJar0OmFUB">目标：&gt; 0.85</div>
+    </div>
+  </div>
+
+  <div class="optimize-card" data-page-node-id="6tvXCinjBd7S0LyJTEnxy5">
+    <h3 data-page-node-id="wAWZ0Wlpthr7HS5diODyIH">📈 优化方向 · 当指标不达标时，从哪里下手？</h3>
+    <div class="optimize-grid" data-page-node-id="qNHtCGEbttbF3WQitIFafq">
+      <div class="opt-item" data-page-node-id="9nk2Go8OE4DraZJBUCzKBS">
+        <div class="opt-tag bad" data-page-node-id="JQg5jln0fWksL8ad5AbQVG">召回低</div>
+        <p data-page-node-id="Ateb6847Qj5RnAqvEO3y4L">→ 优化 Embedding 模型 / 加 HyDE / 加 BM25 / 改写 Query</p>
+      </div>
+      <div class="opt-item" data-page-node-id="V5o1BAuXTj4QB7E6fIlbjx">
+        <div class="opt-tag bad" data-page-node-id="9kNCT3HvH5qv7gHjDrvBh2">精确低</div>
+        <p data-page-node-id="ThbmJl2DMiP3XpYGDeSi4y">→ 加 Reranker / 缩小 TopK / 加元数据过滤</p>
+      </div>
+      <div class="opt-item" data-page-node-id="s7mE6QJXoO4DlxkSHnHkMM">
+        <div class="opt-tag bad" data-page-node-id="lvPqFv0LER7PPJlUBsy0GX">忠实低</div>
+        <p data-page-node-id="MIE0VDeAXkYVyfKoeYFkrb">→ 强化 Prompt 约束 / 减小 temperature / 引用强制</p>
+      </div>
+      <div class="opt-item" data-page-node-id="VZ3bRBY7CX9D1m2R6mFviP">
+        <div class="opt-tag bad" data-page-node-id="GhLc05fKplvciHyJWHEPz1">相关低</div>
+        <p data-page-node-id="BZL8wh1aPsBscW0hwmTjKq">→ 改 Prompt / 微调 Embedding / 换更大模型</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 八、生产实践 Tips -->
+<section class="section" data-page-node-id="CBhIUAqa7ybRNAN4ojtVQc">
+  <div class="section-head" data-page-node-id="pfHG0F6jpt0Wb5plt8AO2s">
+    <span class="section-num" data-page-node-id="ToIv6j9r6xQFQ6csUQemdw">08</span>
+    <h2 data-page-node-id="j92WqDgKLFUMAgO55c9fXN">生产实践 · 踩过的坑和最佳实践</h2>
+    <p data-page-node-id="CP8b52x2QbHII6SQgPbm76">从 Demo 到生产，需要跨越的 6 道坎</p>
+  </div>
+  <div class="tips-grid" data-page-node-id="CWkwx7cD4MREAF9sKfNvix">
+    <div class="tip-card" data-page-node-id="nGtnFO9HlZsB7lEEIBBwID">
+      <div class="tip-num" data-page-node-id="4XUU6JTl6HoZORDliI39A3">01</div>
+      <h4 data-page-node-id="LDd8DVddqx9FEO4ky8zozX">文档切分不是越细越好</h4>
+      <p data-page-node-id="WDmoZH3fc96HcI55pELckR">chunk_size 太小→语义断裂；太大→噪声多。一般 300-800 字 + 10-20% 重叠是甜蜜点。</p>
+    </div>
+    <div class="tip-card" data-page-node-id="JVrs6gCYPYARynrZoZpDBd">
+      <div class="tip-num" data-page-node-id="ziz7Hb8BQ97F9ACxy8N6NT">02</div>
+      <h4 data-page-node-id="W6ab2pS3AXYIUoAd5nvSRL">混合检索是默认选项</h4>
+      <p data-page-node-id="dKFgxzkBV8b2JZmTfUzXIB">纯向量检索会漏掉精确术语（型号/编号/人名），纯 BM25 会漏掉语义相关。生产环境 80% 用混合。</p>
+    </div>
+    <div class="tip-card" data-page-node-id="FET2kBub1XEdPoQl8k9m35">
+      <div class="tip-num" data-page-node-id="K8tML0VYrwnKhmBEsq8lJV">03</div>
+      <h4 data-page-node-id="xadoEjdrlmMRJv4o3DziYy">Rerank 几乎一定要加</h4>
+      <p data-page-node-id="4Y28q4hPiYE8603KTYVvoq">实验数据：加 Reranker 后，Top1 命中率平均提升 30-50%，且能省下大模型 token。</p>
+    </div>
+    <div class="tip-card" data-page-node-id="DtyPbDSGXr5LU5hqke82ZP">
+      <div class="tip-num" data-page-node-id="zGLNybmXRFUAtE82Kz1yWo">04</div>
+      <h4 data-page-node-id="OakSGyfSGIGWglkGbroFVz">引用必须做</h4>
+      <p data-page-node-id="0uTdsmigdtlBxsGUPqs3nD">金融/医疗/法律场景强需求。即使 ToC 场景，引用也能极大提升用户信任度。</p>
+    </div>
+    <div class="tip-card" data-page-node-id="ynsgvhmUc4rL4BP7CNuznG">
+      <div class="tip-num" data-page-node-id="vFtKzW8RalhL0CjLRKf10q">05</div>
+      <h4 data-page-node-id="dOtDmuCmkYdpFCkGSJxZTN">建立 Bad Case 闭环</h4>
+      <p data-page-node-id="EyghuDFqmrld1Ux5iBbcz1">每周抽样 100 条 bad case，分析是检索错/改写错/生成错，对症下药。</p>
+    </div>
+    <div class="tip-card" data-page-node-id="6v3ceumuGUqaAKQsYPkzx7">
+      <div class="tip-num" data-page-node-id="DW3heOVl7RKWf8TXHoOWY9">06</div>
+      <h4 data-page-node-id="3N7Ra9BfcsTNneQebACiKN">冷启动先做"召回漏斗"</h4>
+      <p data-page-node-id="kCsT7HR6gFhG2iriXegQ5U">先跑离线评估调召回率，再上 Rerank 调精确率，最后调 Prompt 调忠实度。顺序不能反。</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer" data-page-node-id="er2oNvoOGZ35D5hxj63WXv">
+  <div class="footer-inner" data-page-node-id="NxRHqgZzy8ENuIzAXGFQao">
+    <div class="footer-brand" data-page-node-id="E94C8TWLZRG3DhZH2T18GF">
+      <span class="brand-mark" data-page-node-id="0HSHkiav63UmMmjh7yEzjP">RAG</span>
+      <span data-page-node-id="lFGrK2UUO8h2S0wvynHdp9">检索增强生成 · 一站式知识图谱</span>
+    </div>
+    <div class="footer-meta" data-page-node-id="MAqDA22z97hDHs26exk6qw">
+      <span data-page-node-id="kWWCGDk9TbLjYUMwNiPRXc">📐 设计：cain · 制作：WorkBuddy</span>
+      <span data-page-node-id="2MgGqrNe1kKpziiloRygus">🕒 2026 · 第 1 版</span>
+    </div>
+    <div class="footer-quote" data-page-node-id="VDDJYgbnqgC34KduDp0sEa">「RAG 不是银弹，但它是大模型落地的第一块砖」</div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

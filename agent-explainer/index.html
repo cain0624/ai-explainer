@@ -1,0 +1,1407 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-page-node-id="B4RlFL0jCG2L9PZ9D25BIk">
+<head data-page-node-id="8DQ4qLf6CtTTgYnaC9XAyW">
+<meta charset="UTF-8" data-page-node-id="BPM3pKGkj0eFD6awnYF7f0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" data-page-node-id="aPKaVuMG84EDTyHGolseKo">
+<title>AI Agent · 从原理到实践</title>
+<link rel="stylesheet" href="styles.css" data-page-node-id="D9S9ldAfEHeXv6gFwEvyf3">
+</head>
+<body data-page-node-id="8LysCWx3vBkyFlypEnZeoE">
+
+<!-- 顶部导航 -->
+<nav class="nav" data-page-node-id="va7pjfQi22oxyFa9pmOvcZ">
+  <div class="nav-inner" data-page-node-id="LTiJpAVgrGEbYKUaBgjddP">
+    <div class="site-switch" id="site-switch" role="button" tabindex="0" aria-haspopup="true" aria-expanded="false" aria-label="切换站点" data-page-node-id="siteSw0001">
+      <div class="brand" data-page-node-id="TB8ZEGtGdRGc4w7wU1qFCj">
+        <span class="brand-mark" data-page-node-id="PQG86RTlfBJHS1ywQ3i2yf">AGENT</span>
+        <span class="brand-text" data-page-node-id="ggPzJ42fltFXapuMj4I136">智能体 · 从原理到实践</span>
+      </div>
+      <span class="brand-caret" aria-hidden="true" data-page-node-id="siteCar0001">
+        <svg width="11" height="7" viewBox="0 0 11 7" data-page-node-id="siteCar0002"><path d="M1 1.2 L5.5 5.6 L10 1.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" /></svg>
+      </span>
+
+      <div class="brand-menu" role="menu" data-page-node-id="siteMenu001">
+        <div class="brand-menu-label" data-page-node-id="siteMenuL001">切换站点</div>
+        <div class="brand-menu-item is-current" role="menuitem" tabindex="0" data-goto="agent" data-page-node-id="siteItem001">
+          <span class="bm-mark" data-page-node-id="siteItemM001">AGENT</span>
+          <span class="bm-body" data-page-node-id="siteItemB001">
+            <span class="bm-name" data-page-node-id="siteItemN001">智能体 · 从原理到实践</span>
+            <span class="bm-sub" data-page-node-id="siteItemS001">LLM + Tools + Memory + Planning</span>
+          </span>
+          <span class="bm-badge" data-page-node-id="siteItemG001">当前</span>
+        </div>
+        <div class="brand-menu-item" role="menuitem" tabindex="0" data-goto="rag" data-page-node-id="siteItem002">
+          <span class="bm-mark" data-page-node-id="siteItemM002">RAG</span>
+          <span class="bm-body" data-page-node-id="siteItemB002">
+            <span class="bm-name" data-page-node-id="siteItemN002">检索增强生成 · 知识图谱</span>
+            <span class="bm-sub" data-page-node-id="siteItemS002">离线索引 + 在线检索生成</span>
+          </span>
+          <span class="bm-arrow" data-page-node-id="siteItemA002">↗</span>
+        </div>
+      </div>
+    </div>
+    <ul class="nav-links" data-page-node-id="c0NDFWIPsPHFSuPyQNx0AS">
+      <li data-page-node-id="G0PQNVxg7yHKiuvuYDp3Xh"><a href="#why" data-page-node-id="LlS5EOtgCRrfIf9MWnxuLi">为什么</a></li>
+      <li data-page-node-id="FM9jpBUCRXou8fSZvHDVj5"><a href="#what" data-page-node-id="flBPcGT2pGsbcV8cX3D4l1">是什么</a></li>
+      <li data-page-node-id="cDuBgpu8127HvjBIbBUJnk"><a href="#flow" data-page-node-id="eabYL7yF8X0gMDYERzGEO6">全链路</a></li>
+      <li data-page-node-id="KIicGCQPCQLdtXCEnXKQhB"><a href="#components" data-page-node-id="Rbm2dVMBe9vWhTkNuMwCIV">6 件套</a></li>
+      <li data-page-node-id="NcJUSRtTRteMHl2CDCVby4"><a href="#advanced" data-page-node-id="2HlHJcbTlqCfYVN7KCAkbC">进阶</a></li>
+      <li data-page-node-id="eLF81yMMNczsjgCb9uVBJH"><a href="#code" data-page-node-id="ACeBkIxE66kZkR5b7kqqXt">实战</a></li>
+      <li data-page-node-id="N4MKrf8DuCjzCkvqr3Wbos"><a href="#eval" data-page-node-id="q0ishSmEAjY4x9nHS9ZtUe">评估</a></li>
+    </ul>
+  </div>
+</nav>
+
+<!-- Hero -->
+<header class="hero" data-page-node-id="KPmlTRSPZyWM3JXQHePJ46">
+  <div class="hero-bg" data-page-node-id="CmwcEM8kM7R77O1DDg5xxh"></div>
+  <div class="hero-content" data-page-node-id="ntYaTLgn7MFDUPYamP9WCK">
+    <div class="hero-tag" data-page-node-id="vp8Dgitn6dHniWPugwgpX7">CHAPTER 00 · 一句话读懂 Agent</div>
+    <h1 class="hero-title" data-page-node-id="BzvLax4FPyMtv8iAjKsq9r">
+      让大模型从<span class="grad-text" data-page-node-id="4qMWYYN14HB4NQj4gx1z4O">「只会说」</span>变成<span class="grad-text" data-page-node-id="1PqeIJxE2yfFpCkDV6LXuN">「能动手」</span>
+    </h1>
+    <p class="hero-sub" data-page-node-id="2HbeDRXDuzjaLIV7KS99ZC">
+      Agent（智能体）= <strong data-page-node-id="jUakAbaTxWWaPT3fcZDYr4">LLM（大脑）</strong> + <strong data-page-node-id="Oc6v62XsQJPOgTUfkOKFdR">Planning（规划）</strong> + <strong data-page-node-id="KMRHNPcP5cn9FHYds39GZD">Memory（记忆）</strong> + <strong data-page-node-id="KKftK16DkHnMVwPno1XFjw">Tools（手脚）</strong>，
+      再放进一个「<strong data-page-node-id="TMk2HkjHrpR6nvqU3RF35n">思考 → 行动 → 观察 → 再思考</strong>」的循环里，直到目标达成。
+      LLM 是一个问答函数，Agent 是一台能自己跑完任务的机器。
+    </p>
+    <div class="hero-compare" data-page-node-id="DjkxTD9TDzVI9GDfEnLwgD">
+      <div class="compare-card bad" data-page-node-id="Ttre0Xfvhm5sb5JvNFEcgz">
+        <div class="compare-icon" data-page-node-id="4GDyS8FmcwZsKaMNTej1pU">🚫</div>
+        <div class="compare-title" data-page-node-id="B0uBhDGGjTqBqrNecCuoFw">传统 LLM（只会说）</div>
+        <div class="compare-desc" data-page-node-id="pYpoHajEvn6rUFxJ2xL4Uh">一问一答、无状态、无规划。你说「帮我订张去上海的机票」，它给你一段订票攻略，然后就没有然后了</div>
+      </div>
+      <div class="compare-arrow" data-page-node-id="eZpSBCePf09vFfk5a3YINl">→</div>
+      <div class="compare-card good" data-page-node-id="DCUCysNOp3jFO93uEUPGGA">
+        <div class="compare-icon" data-page-node-id="9ZhizecwPAzz1D0YtY3qTK">✅</div>
+        <div class="compare-title" data-page-node-id="3WobnaumsIG3P7aAbpOfZN">AI Agent（能动手）</div>
+        <div class="compare-desc" data-page-node-id="5kjAYqI4A9FwA4rwgvaLTP">目标驱动、有记忆、会拆解。它自己查航班 → 比价 → 下单 → 把行程发到你日历，卡住了还会换个路子重试</div>
+      </div>
+    </div>
+    <div class="hero-stat" data-page-node-id="U5Gqa3yEOBSrhAFK81itay">
+      <div class="stat-item" data-page-node-id="DRJeEVdXR1DGeADXgnVHOw"><div class="stat-num" data-page-node-id="O2rFOifWFEKCJcyMnoaOcf">9</div><div class="stat-label" data-page-node-id="aQY0Qm4zCRBHVWM2faOWTC">步运转流程</div></div>
+      <div class="stat-item" data-page-node-id="qxC6ofVdCm0KCXjAhd68ov"><div class="stat-num" data-page-node-id="aqUpYwB3oGSz5cD7mexXlI">6</div><div class="stat-label" data-page-node-id="7UFyKeyTl31rCA0WKi06VF">个核心组件</div></div>
+      <div class="stat-item" data-page-node-id="uh8GzY1MswvrmsItFYviTJ"><div class="stat-num" data-page-node-id="rVmAOP4DiXpXtPe7XgXLm3">5</div><div class="stat-label" data-page-node-id="8NtD3WE2i0377UJAfwarI7">类进阶范式</div></div>
+      <div class="stat-item" data-page-node-id="yJM7bRBVSVcNjWmYOGYEWK"><div class="stat-num" data-page-node-id="bjBb6vimPXNa6TsFpJj3nH">4</div><div class="stat-label" data-page-node-id="mRNfZ2AFKzRkm6W2oBHcIO">项评估指标</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- 一、为什么需要 Agent -->
+<section id="why" class="section section-alt" data-page-node-id="nbSqWxfgG3NM18CGH6jLFy">
+  <div class="section-head" data-page-node-id="QmID0CBV11Z5pEHf9YypEW">
+    <span class="section-num" data-page-node-id="WNGagPs7C30iHOVRKdDiGR">01</span>
+    <h2 data-page-node-id="fGkAHvf13b1X1iMLHWLcdt">为什么需要 Agent？——直击 LLM 的四大局限</h2>
+    <p data-page-node-id="jnH9N9A8DUhEouD0etCZlG">裸用大模型就像请了一位博学的「顾问」——他什么都懂，但什么都干不了</p>
+  </div>
+  <div class="pain-grid" data-page-node-id="O8PSjjZsQBbKPzME5ROJR1">
+    <div class="pain-card" data-page-node-id="Go2eCGS4kMRrnG6ziWaCdT">
+      <div class="pain-emoji" data-page-node-id="PsfuGBqv9TbE7J7KcybQJ5">🖐️</div>
+      <h3 data-page-node-id="w8PkiTkDh0vhjslOvKPL7s">只会说不会做 No Action</h3>
+      <p data-page-node-id="HGuTX1rcWsHi8vVpGnDahZ">模型能写出「如何调用退款接口」的代码，却没法真的去调那个接口。它没有手。</p>
+      <div class="pain-fix" data-page-node-id="x3Fg0mwj9ZEabtLQryko02"><strong data-page-node-id="vg5yw5L8uUT4ZJ9cyEbhio">Agent 解法：</strong>挂载工具（Tool），模型输出结构化调用指令，由执行器真正落地</div>
+    </div>
+    <div class="pain-card" data-page-node-id="OsMx0uTlZhEI9F1EUTeJ8M">
+      <div class="pain-emoji" data-page-node-id="lEyKldSugAUmA0911OCwpc">🐟</div>
+      <h3 data-page-node-id="9nw8fYWsC2ZLFbjk6iKEav">金鱼记忆 No Memory</h3>
+      <p data-page-node-id="25ejpd7bhPCzmyD791bizg">每一轮对话都从零开始。上一轮查到的订单号，下一轮它已经忘了。</p>
+      <div class="pain-fix" data-page-node-id="THM0bZ8VVSMQCnmmay40ui"><strong data-page-node-id="MeIQR3jWiWwzmlpf42hlBW">Agent 解法：</strong>短期缓冲 + 长期向量记忆 + 工作记忆三层结构，跨轮次保持状态</div>
+    </div>
+    <div class="pain-card" data-page-node-id="ZNalTzU4TSzqusMzqcr6Pf">
+      <div class="pain-emoji" data-page-node-id="ZWZ6eDfNSwUivKiMaLoqJu">🎯</div>
+      <h3 data-page-node-id="5Smb6JFrPsDWywHVJRL1c9">单步思维 No Planning</h3>
+      <p data-page-node-id="aEmbaty0UkaQEKLOkI6EDq">让它「做一份竞品分析」，它一口气吐出一段文字，不会拆成「找资料 → 拉数据 → 做对比 → 写结论」。</p>
+      <div class="pain-fix" data-page-node-id="TVsh6KH8ZsDNocYwacS3Lm"><strong data-page-node-id="Vz3ApCyMlxIDSyRTJSmNHp">Agent 解法：</strong>规划器把大目标拆成子任务序列，一步步执行并动态修正</div>
+    </div>
+    <div class="pain-card" data-page-node-id="WG7l1FkDJpEP32Gcbms3Fe">
+      <div class="pain-emoji" data-page-node-id="evhylIb8OLfHFkZ7969Ita">🔌</div>
+      <h3 data-page-node-id="DACAiX8A7ULTMuxMwDGXJM">系统孤岛 No Connection</h3>
+      <p data-page-node-id="FMAvEdPsujkD1FYoo08gp4">你的 CRM、数据库、工单系统、内部 API，模型一个都进不去。</p>
+      <div class="pain-fix" data-page-node-id="WxZFpzLYMBkMZREs00JaxW"><strong data-page-node-id="CMRRmgsAQWhQEKsqjQczyR">Agent 解法：</strong>标准化工具协议（Function Calling / MCP）把企业系统接成大模型的手脚</div>
+    </div>
+  </div>
+</section>
+
+<!-- 二、Agent 是什么 -->
+<section id="what" class="section" data-page-node-id="hjMZlmN9Je0KtMGAAw5TTN">
+  <div class="section-head" data-page-node-id="ntcJzF6rGV3UDvIeLNnt01">
+    <span class="section-num" data-page-node-id="XnML5w8YlDJacNbaVTSogm">02</span>
+    <h2 data-page-node-id="NOPPGJEt6vYXBVcbEMfU0b">Agent 到底是什么？</h2>
+    <p data-page-node-id="JCpiuJfnJcw2irNLHuWMqK">一个公式 + 一个比喻，三分钟讲透</p>
+  </div>
+  <div class="what-grid" data-page-node-id="CN7CRlYxr094atXDrjkXsL">
+    <div class="formula-card" data-page-node-id="wEFjFvW53OAvjaP98fyDID">
+      <div class="formula-label" data-page-node-id="6yhs0QcAhMgo2iWsa7l2Un">核心公式</div>
+      <div class="formula" data-page-node-id="OnyOIniFbP31OxFDJaTYXH">
+        <span class="f-blue" data-page-node-id="qn1hzHYs6FL3LtXOWgbhnm">Agent</span>
+        <span class="f-op" data-page-node-id="oNEGbiEfYCgFjAo5uuPPGA">=</span>
+        <span class="f-purple" data-page-node-id="wSCLCe4OBvedCzv7vQKXBo">LLM</span>
+        <span class="f-op" data-page-node-id="MExA2V6Apoi7fCBijDEYVg">+</span>
+        <span class="f-pink" data-page-node-id="HsjpDHxuUUG4g3VMbN5AEb">Tools</span>
+        <span class="f-op" data-page-node-id="Gw4D3OOlZaG5HemGelzFGb">+</span>
+        <span class="f-green" data-page-node-id="O4myYIByPGpWGbkgbOlesk">Memory</span>
+        <span class="f-op" data-page-node-id="DaGHg9rxdkvy65KClMUhf2">+</span>
+        <span class="f-blue" data-page-node-id="VNG37KuDGGxFhsjghTg2zK">Planning</span>
+      </div>
+      <p class="formula-note" data-page-node-id="9HFPHEpWFrFQrAnj5pDv6B">并且这个组合被放进一个循环：<strong data-page-node-id="w2wko4iYceVM5bISPTPfAz">思考 → 行动 → 观察 → 再思考</strong>，直到目标达成才停止</p>
+    </div>
+    <div class="metaphor-card" data-page-node-id="7yPuOVdc2tRlN67EbnTcE3">
+      <div class="metaphor-icon" data-page-node-id="DnDLcbFA3fq1hx8e1rMCNw">🧑‍💼</div>
+      <h3 data-page-node-id="uPEYK8lTJVaOSEhuDqFyMO">一个比喻：从「顾问」到「实习生」</h3>
+      <ul class="metaphor-list" data-page-node-id="4qxuGyPM8jRs8kmpNEZfi7">
+        <li data-page-node-id="ge3TN4qpvgIbiJhvG5B3aU"><strong data-page-node-id="VdGI9w4PHvxepvAckW8GpJ">LLM 大脑</strong> = 实习生的知识水平与判断力</li>
+        <li data-page-node-id="0EiDcXHCPMHnjyTnFjqK5j"><strong data-page-node-id="NLdRjLEUlbI8EUOEudQ6Ow">工具 Tools</strong> = 他能用的电脑、电话、系统账号</li>
+        <li data-page-node-id="2OuDqmG11Kx54MpSAEasqz"><strong data-page-node-id="EcOBfA9GOZ1FrEru59ZPqy">记忆 Memory</strong> = 他的记事本和你的历史交办</li>
+        <li data-page-node-id="YiKT3TmMZYNHfY0euZC4Wo"><strong data-page-node-id="iXSerZ9ATOK5Fj0pL42RKU">规划 Planning</strong> = 他接到任务后先列 TODO 再动手</li>
+        <li data-page-node-id="GXA0ADzau4hNjZTlwoWifp"><strong data-page-node-id="mUWUrjayUBLpWyO0P4tqnT">护栏 Guardrails</strong> = 报销超过 5000 元必须找你签字</li>
+      </ul>
+      <div class="metaphor-punchline" data-page-node-id="aac8RHOMhMmbVNOapZpJEx">没有 Agent 的 LLM = 一个只能口头回答问题的顾问，永远不动手</div>
+    </div>
+  </div>
+</section>
+
+<!-- 三、Agent 运转流程（构建期 + 运行期 · 逐步操作交互） -->
+<section id="flow" class="section flow-section" data-page-node-id="ePtxzV34UdUWFNFILAPPg5">
+  <div class="section-head" data-page-node-id="KphtAGE9IGBBjhkGV6sfQv">
+    <span class="section-num" data-page-node-id="LzPR06PAGOfxLL4hOTW3WS">03</span>
+    <h2 data-page-node-id="B1YlVnZMIeskM2e2lcNIEW">Agent 运转流程 · 构建期装配 + 运行期自主循环</h2>
+    <p data-page-node-id="09Zga9IFx6kJkybVKCJtwe">把 Agent 按<strong data-page-node-id="PDMDO2PjjkFR019DCAEMDy">时间维度</strong>拆成两个阶段：<span class="offline-tag" data-page-node-id="jN3QaccmjT40G03yWEDQLz">构建期 Setup</span>定义 Agent 的能力边界（角色 / 工具 / 记忆 / 护栏），<span class="online-tag" data-page-node-id="CpC3FZQ0Q1MIDAzCimiDVI">运行期 Runtime</span>让它自主循环、直到完成目标。每个步骤都需要你完成实际配置才能解锁下一步 ⬇️</p>
+  </div>
+
+  <!-- ===== Agent 通用架构图（横向 · 流动动效） ===== -->
+  <div class="flowmap-card" data-page-node-id="fmpCard0001">
+    <div class="flowmap-head" data-page-node-id="fmpHead0001">
+      <div data-page-node-id="fmpHeadL001">
+        <span class="flowmap-badge" data-page-node-id="fmpBadge001">ARCHITECTURE MAP</span>
+        <h3 class="flowmap-title" data-page-node-id="fmpTitle001">一次完整的 Agent 运转 · 从左到右跑完「思考 → 行动 → 观察」</h3>
+      </div>
+      <span class="flowmap-hint" data-page-node-id="fmpHint0001">Input → Model → Memory → Planning → Tools / Context → Action → Environment</span>
+    </div>
+
+    <div class="flowmap-canvas" data-page-node-id="fmpCanvas01">
+      <svg class="flowmap-svg" viewBox="0 0 1240 412" role="img" aria-label="Agent 通用架构横向流程图" xmlns="http://www.w3.org/2000/svg" data-page-node-id="fmpSvg0001">
+        <defs data-page-node-id="fmpDefs0001">
+          <marker id="fmArrowBlue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#93c5fd" /></marker>
+          <marker id="fmArrowPurple" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#d8b4fe" /></marker>
+          <marker id="fmArrowCyan" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#67e8f9" /></marker>
+          <marker id="fmArrowPink" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#f9a8d4" /></marker>
+          <marker id="fmArrowGreen" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#6ee7b7" /></marker>
+          <marker id="fmArrowAmber" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#fcd34d" /></marker>
+        </defs>
+
+        <!-- 连线 · 静态底 -->
+        <g data-page-node-id="fmpLines001">
+          <path class="fm-line fm-line-blue" d="M124,200 H172" marker-end="url(#fmArrowBlue)" data-page-node-id="fmLn01" />
+          <path class="fm-line fm-line-blue" d="M276,200 H324" marker-end="url(#fmArrowBlue)" data-page-node-id="fmLn02" />
+          <path class="fm-line fm-line-blue" d="M428,200 H476" marker-end="url(#fmArrowBlue)" data-page-node-id="fmLn03" />
+          <path class="fm-line fm-line-purple" d="M580,200 H624" data-page-node-id="fmLn04" />
+          <path class="fm-line fm-line-purple" d="M624,200 V112 H708" marker-end="url(#fmArrowPurple)" data-page-node-id="fmLn05" />
+          <path class="fm-line fm-line-cyan" d="M624,200 V288 H708" marker-end="url(#fmArrowCyan)" data-page-node-id="fmLn06" />
+          <path class="fm-line fm-line-pink" d="M812,112 H880 V200 H940" marker-end="url(#fmArrowPink)" data-page-node-id="fmLn07" />
+          <path class="fm-line fm-line-cyan" d="M812,288 H880 V200" data-page-node-id="fmLn08" />
+          <path class="fm-line fm-line-green" d="M1044,200 H1092" marker-end="url(#fmArrowGreen)" data-page-node-id="fmLn09" />
+          <path class="fm-line fm-line-amber" d="M992,228 V364 H528 V228" marker-end="url(#fmArrowAmber)" data-page-node-id="fmLn10" />
+        </g>
+
+        <!-- 连线 · 流动光带 -->
+        <g data-page-node-id="fmpFlows001">
+          <path class="fm-flow fm-flow-blue" style="--dash:14;--gap:34;--off:48;--dur:.9s" d="M124,200 H172" data-page-node-id="fmFl01" />
+          <path class="fm-flow fm-flow-blue" style="--dash:14;--gap:34;--off:48;--dur:.9s;animation-delay:.3s" d="M276,200 H324" data-page-node-id="fmFl02" />
+          <path class="fm-flow fm-flow-blue" style="--dash:14;--gap:34;--off:48;--dur:.9s;animation-delay:.6s" d="M428,200 H476" data-page-node-id="fmFl03" />
+          <path class="fm-flow fm-flow-purple" style="--dash:14;--gap:30;--off:44;--dur:.85s;animation-delay:.85s" d="M580,200 H624" data-page-node-id="fmFl04" />
+          <path class="fm-flow fm-flow-purple" style="--dash:18;--gap:154;--off:172;--dur:2.4s;animation-delay:1.05s" d="M624,200 V112 H708" data-page-node-id="fmFl05" />
+          <path class="fm-flow fm-flow-cyan" style="--dash:18;--gap:154;--off:172;--dur:2.4s;animation-delay:1.05s" d="M624,200 V288 H708" data-page-node-id="fmFl06" />
+          <path class="fm-flow fm-flow-pink" style="--dash:18;--gap:198;--off:216;--dur:3s;animation-delay:1.6s" d="M812,112 H880 V200 H940" data-page-node-id="fmFl07" />
+          <path class="fm-flow fm-flow-cyan" style="--dash:16;--gap:140;--off:156;--dur:2.2s;animation-delay:1.6s" d="M812,288 H880 V200" data-page-node-id="fmFl08" />
+          <path class="fm-flow fm-flow-green" style="--dash:14;--gap:34;--off:48;--dur:.9s;animation-delay:2.4s" d="M1044,200 H1092" data-page-node-id="fmFl09" />
+          <path class="fm-flow fm-flow-amber" style="--dash:26;--gap:710;--off:736;--dur:5.5s;animation-delay:.5s" d="M992,228 V364 H528 V228" data-page-node-id="fmFl10" />
+        </g>
+
+        <!-- 节点 -->
+        <g class="fm-nodes" data-page-node-id="fmpNodes001">
+          <g class="fm-node fm-node-amber" data-page-node-id="fmNd01">
+            <rect x="20" y="172" width="104" height="56" rx="14" />
+            <text class="fm-nt" x="72" y="197">输入</text>
+            <text class="fm-ns" x="72" y="216">Input</text>
+          </g>
+          <g class="fm-node fm-node-blue" data-page-node-id="fmNd02">
+            <rect x="172" y="172" width="104" height="56" rx="14" />
+            <text class="fm-nt" x="224" y="197">大模型</text>
+            <text class="fm-ns" x="224" y="216">Model</text>
+          </g>
+          <g class="fm-node fm-node-cyan" data-page-node-id="fmNd03">
+            <rect x="324" y="172" width="104" height="56" rx="14" />
+            <text class="fm-nt" x="376" y="197">记忆</text>
+            <text class="fm-ns" x="376" y="216">Memory</text>
+          </g>
+          <g class="fm-node fm-node-purple" data-page-node-id="fmNd04">
+            <rect x="476" y="172" width="104" height="56" rx="14" />
+            <text class="fm-nt" x="528" y="197">规划</text>
+            <text class="fm-ns" x="528" y="216">Planning</text>
+          </g>
+          <g class="fm-node fm-node-blue" data-page-node-id="fmNd05">
+            <rect x="708" y="84" width="104" height="56" rx="14" />
+            <text class="fm-nt" x="760" y="109">工具</text>
+            <text class="fm-ns" x="760" y="128">Tools</text>
+          </g>
+          <g class="fm-node fm-node-teal" data-page-node-id="fmNd06">
+            <rect x="708" y="260" width="104" height="56" rx="14" />
+            <text class="fm-nt" x="760" y="285">上下文</text>
+            <text class="fm-ns" x="760" y="304">Context</text>
+          </g>
+          <g class="fm-node fm-node-pink" data-page-node-id="fmNd07">
+            <rect x="940" y="172" width="104" height="56" rx="14" />
+            <text class="fm-nt" x="992" y="197">行动</text>
+            <text class="fm-ns" x="992" y="216">Action</text>
+          </g>
+          <g class="fm-node fm-node-green" data-page-node-id="fmNd08">
+            <rect x="1092" y="172" width="104" height="56" rx="14" />
+            <text class="fm-nt" x="1144" y="197">环境</text>
+            <text class="fm-ns" x="1144" y="216">Environment</text>
+          </g>
+        </g>
+
+        <!-- 标注 -->
+        <g data-page-node-id="fmpAnnos001">
+          <text class="fm-anno fm-anno-mid" x="72" y="254">User / System Prompt</text>
+          <text class="fm-anno fm-anno-mid" x="376" y="152">RAG · LLM Wiki</text>
+          <text class="fm-anno fm-anno-mid" x="376" y="254">long / short-term</text>
+          <text class="fm-anno fm-anno-start" x="636" y="168">Function Calling · MCP</text>
+          <text class="fm-anno fm-anno-start" x="636" y="248">Observation 观察</text>
+          <text class="fm-anno fm-anno-mid" x="760" y="342">long / short-term</text>
+          <text class="fm-anno fm-anno-mid fm-anno-hot" x="760" y="390">↺ Feedback · 执行结果回流到下一轮</text>
+        </g>
+      </svg>
+    </div>
+
+    <!-- Agent Loop · 运行时循环链路 -->
+    <div class="flowloop" data-page-node-id="fmpLoop0001">
+      <div class="flowloop-head" data-page-node-id="fmpLoopH001">
+        <span class="flowloop-label" data-page-node-id="fmpLoopL001">AGENT LOOP · 运行时循环</span>
+        <span class="flowloop-desc" data-page-node-id="fmpLoopD001">运行时六环节闭环 · 每轮要么交付结果，要么回到规划再来一轮</span>
+      </div>
+      <div class="flowloop-canvas" data-page-node-id="fmpLoopC001">
+        <svg class="flowloop-svg" viewBox="0 0 1240 190" role="img" aria-label="Agent Loop 运行时循环链路" xmlns="http://www.w3.org/2000/svg" data-page-node-id="fmpLoopS001">
+          <defs data-page-node-id="fmpLoopDefs01">
+            <marker id="flArrowTeal" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#5eead4" /></marker>
+            <marker id="flArrowBlue" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#93c5fd" /></marker>
+            <marker id="flArrowPink" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#f9a8d4" /></marker>
+            <marker id="flArrowCyan" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#67e8f9" /></marker>
+            <marker id="flArrowGreen" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#6ee7b7" /></marker>
+            <marker id="flArrowAmber" viewBox="0 0 10 10" refX="10" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0,0 L10,5 L0,10 Z" fill="#fcd34d" /></marker>
+          </defs>
+
+          <!-- 循环链路 · 静态底 -->
+          <g data-page-node-id="fmpLoopLn001">
+            <path class="fm-line fm-line-teal" d="M170,68 H230" marker-end="url(#flArrowTeal)" data-page-node-id="flLn01" />
+            <path class="fm-line fm-line-blue" d="M380,68 H440" marker-end="url(#flArrowBlue)" data-page-node-id="flLn02" />
+            <path class="fm-line fm-line-pink" d="M590,68 H650" marker-end="url(#flArrowPink)" data-page-node-id="flLn03" />
+            <path class="fm-line fm-line-cyan" d="M800,68 H860" marker-end="url(#flArrowCyan)" data-page-node-id="flLn04" />
+            <path class="fm-line fm-line-green" d="M1010,68 H1070" marker-end="url(#flArrowGreen)" data-page-node-id="flLn05" />
+            <path class="fm-line fm-line-amber" d="M1145,96 V138 H95 V96" marker-end="url(#flArrowAmber)" data-page-node-id="flLn06" />
+          </g>
+
+          <!-- 循环链路 · 流动光带 -->
+          <g data-page-node-id="fmpLoopFl001">
+            <path class="fm-flow fm-flow-teal" style="--dash:14;--gap:46;--off:60;--dur:1.1s" d="M170,68 H230" data-page-node-id="flFl01" />
+            <path class="fm-flow fm-flow-blue" style="--dash:14;--gap:46;--off:60;--dur:1.1s;animation-delay:.35s" d="M380,68 H440" data-page-node-id="flFl02" />
+            <path class="fm-flow fm-flow-pink" style="--dash:14;--gap:46;--off:60;--dur:1.1s;animation-delay:.7s" d="M590,68 H650" data-page-node-id="flFl03" />
+            <path class="fm-flow fm-flow-cyan" style="--dash:14;--gap:46;--off:60;--dur:1.1s;animation-delay:1.05s" d="M800,68 H860" data-page-node-id="flFl04" />
+            <path class="fm-flow fm-flow-green" style="--dash:14;--gap:46;--off:60;--dur:1.1s;animation-delay:1.4s" d="M1010,68 H1070" data-page-node-id="flFl05" />
+            <path class="fm-flow fm-flow-amber" style="--dash:26;--gap:1108;--off:1134;--dur:6s;animation-delay:.7s" d="M1145,96 V138 H95 V96" data-page-node-id="flFl06" />
+          </g>
+
+          <!-- 循环环节 -->
+          <g class="fm-nodes" data-page-node-id="fmpLoopNd001">
+            <g class="fm-node fm-node-purple" data-page-node-id="flNd01">
+              <rect x="20" y="40" width="150" height="56" rx="14" />
+              <text class="fm-nt" x="95" y="64">规划 Planning</text>
+              <text class="fm-ns" x="95" y="83">ReAct / Plan &amp; Execute</text>
+            </g>
+            <g class="fm-node fm-node-teal" data-page-node-id="flNd02">
+              <rect x="230" y="40" width="150" height="56" rx="14" />
+              <text class="fm-nt" x="305" y="64">上下文</text>
+              <text class="fm-ns" x="305" y="83">Context</text>
+            </g>
+            <g class="fm-node fm-node-blue" data-page-node-id="flNd03">
+              <rect x="440" y="40" width="150" height="56" rx="14" />
+              <text class="fm-nt" x="515" y="64">工具</text>
+              <text class="fm-ns" x="515" y="83">Tools</text>
+            </g>
+            <g class="fm-node fm-node-pink" data-page-node-id="flNd04">
+              <rect x="650" y="40" width="150" height="56" rx="14" />
+              <text class="fm-nt" x="725" y="64">行动</text>
+              <text class="fm-ns" x="725" y="83">Action</text>
+            </g>
+            <g class="fm-node fm-node-cyan" data-page-node-id="flNd05">
+              <rect x="860" y="40" width="150" height="56" rx="14" />
+              <text class="fm-nt" x="935" y="64">观察</text>
+              <text class="fm-ns" x="935" y="83">Observation</text>
+            </g>
+            <g class="fm-node fm-node-green" data-page-node-id="flNd06">
+              <rect x="1070" y="40" width="150" height="56" rx="14" />
+              <text class="fm-nt" x="1145" y="64">输出 / 循环规划</text>
+              <text class="fm-ns" x="1145" y="83">Answer / Re-plan</text>
+            </g>
+          </g>
+
+          <text class="fm-anno fm-anno-mid fm-anno-hot" x="620" y="166" data-page-node-id="flAnno01">未达成目标 ↺ 带着 Observation 的结果回到 Planning 重新规划</text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- 全局进度条 -->
+  <div class="global-progress" data-page-node-id="Y4Poij6vRbSg0HhbmbM63Q">
+    <div class="global-progress-bar" data-page-node-id="lX7Uj6RYIYzXdaH6QAIApZ">
+      <div class="global-progress-fill" id="global-progress-fill" data-page-node-id="Rmm4y3WK8OZ8OX7JX6G6DR"></div>
+    </div>
+    <div class="global-progress-info" data-page-node-id="bgvcFioHVmZ6NG66ks3YAo">
+      <span id="global-progress-text" data-page-node-id="GUwjPzpD18wZFgo98a6Trn">📦 准备就绪 · 从构建期 ① 开始装配你的第一个 Agent</span>
+      <span class="global-progress-counter" data-page-node-id="tg4pXPMetbfmxt0NmfSXPh"><span id="global-cur-step" data-page-node-id="WDfk5zT4SBYq4s7s3OYN3f">0</span> / 9 步</span>
+    </div>
+    <div class="global-progress-actions" data-page-node-id="XXKVlwOJWRFHLMPtzSlUd5">
+      <button class="ctrl-btn small" id="reset-all-btn" data-page-node-id="XZSM2yIkQVzJw4C8x1yR7s">⟲ 全部重置</button>
+      <button class="ctrl-btn small primary" id="auto-fill-btn" data-page-node-id="R2DnWklaTvESpFpjwFYhMF">⚡ 一键自动配置</button>
+    </div>
+  </div>
+
+  <!-- 左右布局：左侧 sticky 步骤导航 + 右侧流程内容 -->
+  <div class="flow-layout" data-page-node-id="Oefj6cAlIrop0pjjmwDSFa">
+
+    <!-- 左侧步骤导航 -->
+    <aside class="flow-sidebar" id="flow-sidebar" data-page-node-id="qXn0Avd0G2XejJtdgFFlrW">
+      <div class="sidebar-head" data-page-node-id="1WOIEgqlvuEYgjAHWvzngj">
+        <span class="sidebar-title" data-page-node-id="i6hvzU0VLhxXkNe9ZlxDDa">📋 流程导航</span>
+        <span class="sidebar-count" data-page-node-id="ryRghJCzDdB1kuMGr4hFAJ"><span id="sidebar-done-count" data-page-node-id="AL1bwaKl487BYffHDI8XuZ">0</span>/9</span>
+      </div>
+      <nav class="sidebar-nav" id="sidebar-nav" data-page-node-id="BB5LAiDT5QorY6a15U9UWO">
+        <div class="sidebar-group offline-group" id="sidebar-offline-group" data-page-node-id="GDkhSbbeaHBOJJhcucXq1W">
+          <div class="sidebar-group-label" data-page-node-id="Tu3NtSIxQOz83G5zXAbTVt">🟠 Setup · 构建期</div>
+          <div class="sidebar-item active" data-step="1" data-status="active" data-page-node-id="Rzf5suQc2cgWK6P8q50mpW">
+            <span class="sidebar-node" data-page-node-id="RChp27hUmbEZ6ayMyfGsx6">①</span>
+            <span class="sidebar-label" data-page-node-id="FLVKMacorcyeyQWAT178l8">角色与目标</span>
+          </div>
+          <div class="sidebar-item" data-step="2" data-status="locked" data-page-node-id="CfsmJVvivl85iLGi4PvdoA">
+            <span class="sidebar-node" data-page-node-id="7H3SE6NpemeBb3ktWhUnAd">②</span>
+            <span class="sidebar-label" data-page-node-id="4x2nWxlprlFQFvG6fE4k8y">注册工具</span>
+          </div>
+          <div class="sidebar-item" data-step="3" data-status="locked" data-page-node-id="xAlbSLV2neANZ78Zp2xYMM">
+            <span class="sidebar-node" data-page-node-id="TsdyfrhL3Cu4UzU0ySqBds">③</span>
+            <span class="sidebar-label" data-page-node-id="qFnRDUJv4HdHBlnkA02eBq">挂载记忆</span>
+          </div>
+          <div class="sidebar-item" data-step="4" data-status="locked" data-page-node-id="ZOTOT1AysTi4mOfruGfBms">
+            <span class="sidebar-node" data-page-node-id="OFnqmtvRF6bzmsb4w2LQqt">④</span>
+            <span class="sidebar-label" data-page-node-id="jHTdIWpkk1ppYaOIQWjvVA">规划与护栏</span>
+          </div>
+        </div>
+        <div class="sidebar-group online-group locked" id="sidebar-online-group" data-page-node-id="w9dHizLhrzvECebGixNDED">
+          <div class="sidebar-group-label" data-page-node-id="EcnTps8Da1wT08atGdlMNy">🔵 Runtime · 运行期</div>
+          <div class="sidebar-item" data-step="5" data-status="locked" data-page-node-id="5a88xELDShJPD4upK55nEK">
+            <span class="sidebar-node" data-page-node-id="U2LbJZptwOEn25dxkqBpK4">⑤</span>
+            <span class="sidebar-label" data-page-node-id="KUi4lpKyXmjFQu8hqAHEXs">接收任务</span>
+          </div>
+          <div class="sidebar-item" data-step="6" data-status="locked" data-page-node-id="QooeoAQ3MwnqavUFEhZBNn">
+            <span class="sidebar-node" data-page-node-id="HyfboeIqMkGLVcWbZFSOfz">⑥</span>
+            <span class="sidebar-label" data-page-node-id="PnKe5Cf8gy1CECtxsH5mL0">思考规划</span>
+          </div>
+          <div class="sidebar-item" data-step="7" data-status="locked" data-page-node-id="xsQc6Sk0Q95YEGBjGG0Rji">
+            <span class="sidebar-node" data-page-node-id="SidTVHcLoUECR75KBVNSYB">⑦</span>
+            <span class="sidebar-label" data-page-node-id="pNJuk5Fl2av4KooA1nK5Nx">调用工具</span>
+          </div>
+          <div class="sidebar-item" data-step="8" data-status="locked" data-page-node-id="ZkyShrj8hXGe7DPQk7ZsE7">
+            <span class="sidebar-node" data-page-node-id="Z7PMEy4Uwfz8NWAslWuKlg">⑧</span>
+            <span class="sidebar-label" data-page-node-id="z7f0paFJhg8OooiX1B264K">观察结果</span>
+          </div>
+          <div class="sidebar-item" data-step="9" data-status="locked" data-page-node-id="1CCebITdFXfA8GiPmlWnaH">
+            <span class="sidebar-node" data-page-node-id="iCqU3BaTGqdgEJmpx0LLPI">⑨</span>
+            <span class="sidebar-label" data-page-node-id="sbKO3yapYiX30g0RsipJQd">收敛交付</span>
+          </div>
+        </div>
+      </nav>
+      <div class="sidebar-tip" data-page-node-id="tw5J6xLAOlK3Vp8C6tHUhH">💡 点击可跳转到已解锁步骤</div>
+    </aside>
+
+    <!-- 右侧流程内容 -->
+    <div class="flow-main" data-page-node-id="0ufpngTcNzhqYxVdHqrq8I">
+
+  <!-- 构建期 -->
+  <div class="rag-stage offline" id="offline-stage" data-page-node-id="WYE9leWmk2MWUnEAtPSgPz">
+    <div class="stage-header" data-page-node-id="RfCBCJAeAxwGfLp19pSYRC">
+      <div class="stage-tag" data-page-node-id="EmrZpvSKGoodDW7O3ZnH8W">
+        <span class="stage-badge offline-badge" data-page-node-id="h6r2EJSHvScIqaxh5GWqFh">Setup · 构建期</span>
+        <h3 data-page-node-id="iZYI2Ysr6EqH1168ypavwr">阶段一 · 能力装配</h3>
+      </div>
+      <p class="stage-desc" data-page-node-id="itwAxwoXrZOdc9KNnK9SFB">定义 Agent 是谁、能用什么工具、记得住什么、越界的红线在哪。配好之后长期复用，只在业务变化时改</p>
+      <div class="stage-meta" data-page-node-id="qwNbf6GhSzSkKCecrPiggI">
+        <span data-page-node-id="5wyyND5x4CBzQdCLur5Xy6">⏱ 耗时：小时级（配置 + 调试）</span>
+        <span data-page-node-id="iS7vPXWUo2YinW9hEjwD7b">🔁 频率：上线前装配一次，按需迭代</span>
+        <span data-page-node-id="HrDbXCGAsYH9KuSeBDvc4q">🎯 进度：<span id="offline-progress" data-page-node-id="uFF3IHDEC0N9kKLBKM2GuX">0</span>/4</span>
+      </div>
+    </div>
+
+    <div class="step-list" id="offline-step-list" data-page-node-id="9L7SoXGvBrn4Rq28ORbWZ8">
+
+      <!-- ① 角色与目标 -->
+      <div class="step-card" data-stage="offline" data-step="1" data-status="active" data-page-node-id="P5lVeP5ytvVLY4RCwr5BjH">
+        <div class="step-header" data-page-node-id="msGHz8Pr4YeT0T0oiPrfCU">
+          <span class="step-num-badge offline-num" data-page-node-id="cHu5AGPgrtE5ovSdWLHbGC">①</span>
+          <div class="step-info" data-page-node-id="nJaQhKokAOBZgAqyMCOxfF">
+            <h3 class="step-title" data-page-node-id="6hnMUspw064pLFcpGp90FL">定义角色与目标 <span class="step-en" data-page-node-id="eWQE2PPEpdD38lEgEhBWIU">Persona &amp; Goal</span></h3>
+            <p class="step-desc" data-page-node-id="wGatuFi2gbpGMrB8W0UZJ6">写 System Prompt：Agent 是谁、为谁服务、目标是什么、边界在哪</p>
+          </div>
+          <span class="step-state-badge state-active" data-page-node-id="ViMRUKktFfMp8ClRGCyqEg">⏳ 待操作</span>
+        </div>
+        <div class="step-body" data-page-node-id="mXFIWT1DWDnkiY4VCOHKCO">
+          <div class="action-block" data-page-node-id="9LoZB6F7cIv1sdktXtFkIJ">
+            <label class="action-label" data-page-node-id="DAQF7DSefF0cl3ShKE6Et3">1️⃣ 选择 Agent 的角色</label>
+            <div class="model-selector" data-page-node-id="wkiqa7Xg4ANZoGZDDkQeeQ">
+              <label class="model-card" data-page-node-id="95nDAxYfhDSNwlgSbf5W5L">
+                <input type="radio" name="persona" value="sales" data-page-node-id="k3Vo7RHeAuZA0C8QQGWCQt">
+                <div class="model-info" data-page-node-id="XJ3JH0Tq4yoAM507Z73DF8">
+                  <div class="model-name" data-page-node-id="T9a2sOrmvTSzxm0TtHRMJH">🎯 保险销售顾问</div>
+                  <div class="model-meta" data-page-node-id="XIKdinGXKVqqlx5Bbed6aH">懂产品、会算方案、不乱承诺</div>
+                </div>
+                <span class="model-badge recommend" data-page-node-id="mKn8DtMv3h44fLMxcLdGe6">推荐</span>
+              </label>
+              <label class="model-card" data-page-node-id="I6S2FBZnQCNCIoK1qHi2HH">
+                <input type="radio" name="persona" value="devops" checked data-page-node-id="x7qcWKpw9Z59LhHdexKWV4">
+                <div class="model-info" data-page-node-id="8YBkPSXzA53u0dUB9ulIAf">
+                  <div class="model-name" data-page-node-id="GF2oCMBox9wsdvGnCu2bZs">🛠️ 运维排障助手</div>
+                  <div class="model-meta" data-page-node-id="EZ52X9bElFpznt88V3z25R">查日志、看监控、定位根因</div>
+                </div>
+                <span class="model-badge" data-page-node-id="cKZonZoJoHJkpZbBPvB0Sk">技术</span>
+              </label>
+              <label class="model-card" data-page-node-id="7IJEx0RvIHjKOKvijlGCVi">
+                <input type="radio" name="persona" value="analyst" data-page-node-id="WhRFglPQYPW3F7w7ZzyuVG">
+                <div class="model-info" data-page-node-id="waJGIBrNhxdDlGWAxMT3cY">
+                  <div class="model-name" data-page-node-id="gMKkvOLI5AkFr8xOp4abMt">📊 数据分析师</div>
+                  <div class="model-meta" data-page-node-id="e8cjZaJu0VSKKSlv2vWirq">写 SQL、跑报表、给结论</div>
+                </div>
+                <span class="model-badge" data-page-node-id="jdqxTNzAszLgtDOPTN2zMS">业务</span>
+              </label>
+              <label class="model-card" data-page-node-id="x2m8mrPJpfDicLAWq3MhdI">
+                <input type="radio" name="persona" value="cs" data-page-node-id="c29tEqCv1GWeq7xylXZ8X6">
+                <div class="model-info" data-page-node-id="BEHpWsHzwX7N6MGlDEUAqD">
+                  <div class="model-name" data-page-node-id="lsod4p6k29fujvR5GkB1X3">💬 客服处理专员</div>
+                  <div class="model-meta" data-page-node-id="rBmmVqvjGL48nZo6mnfgNI">查工单、认领、回复、升级</div>
+                </div>
+                <span class="model-badge" data-page-node-id="PQJQvFZ5l1fgVAfq41hufV">服务</span>
+              </label>
+            </div>
+          </div>
+          <div class="action-block" data-page-node-id="WO5TDZHee8OhD2xYy3irIH">
+            <label class="action-label" data-page-node-id="4Mv523WnlCddTBe9AsMAi2">2️⃣ 用一句话写清目标（越具体越好）</label>
+            <div class="query-input-card" data-page-node-id="77b5bYTpeKAxXAxkCDuJm9">
+              <textarea id="agent-goal" class="query-textarea" rows="2">在 10 分钟内定位线上服务 5xx 错误的根因，给出修复建议并生成故障报告</textarea>
+            </div>
+          </div>
+          <div class="action-block" data-page-node-id="gEsGMwcnbUx8XZA2UVyiBn">
+            <label class="action-label" data-page-node-id="LqhXmetAAoPyZzTyRg31Rr">3️⃣ 选择交互风格</label>
+            <div class="type-selector" data-page-node-id="Q1Er5lmzvFnHgSuG6nCHxA">
+              <button class="opt-btn active" data-action="tone" data-value="concise" data-page-node-id="4HyMd5G0zFvqmNW9FNDSym">⚡ 简洁直接</button>
+              <button class="opt-btn" data-action="tone" data-value="stepwise" data-page-node-id="AFwvuIKGMdCFWZ4jG0ZkHT">📋 分步说明</button>
+              <button class="opt-btn" data-action="tone" data-value="expert" data-page-node-id="TsTeZf0EsMaA4A22p8QKto">🎓 专家口吻</button>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer" data-page-node-id="62RNMTcqWHD9lI3BJXPcas">
+          <div class="step-hint" data-page-node-id="ohtWG4X4UVQCh5Vo7VqxKx">💡 提示：目标越模糊，Agent 越容易跑偏。写清「做什么 + 到什么程度算完成」</div>
+          <button class="step-complete-btn" data-step="1" data-page-node-id="Vx6dyRqkH6flqr5cEA8dA4">✓ 完成定义 · 进入 ② 注册工具</button>
+        </div>
+        <div class="step-output" hidden data-page-node-id="u4uT2E8lmKAqW7htzF09HN"></div>
+      </div>
+
+      <!-- ② 注册工具 -->
+      <div class="step-card locked" data-stage="offline" data-step="2" data-status="locked" data-page-node-id="eTfnacO085Eb8uHjqwZxAG">
+        <div class="step-header" data-page-node-id="6oVPA05xZDBYk5nDAhgM6t">
+          <span class="step-num-badge offline-num" data-page-node-id="QoIM0qx8UMYJQAOY58CGHQ">②</span>
+          <div class="step-info" data-page-node-id="xlSFNWZAHVDC2z0OkljGbH">
+            <h3 class="step-title" data-page-node-id="BYNjsGVpCHTKXV6287Dopo">注册工具 <span class="step-en" data-page-node-id="JSJRYqBQWq2EtAjfPqv8Hc">Tool Registry</span></h3>
+            <p class="step-desc" data-page-node-id="phUw39F0LB87YKAEpSvoRs">给 Agent 装上手脚：每个工具都要有清晰的名称、描述、参数 Schema</p>
+          </div>
+          <span class="step-state-badge state-locked" data-page-node-id="de8jGwAvXeXpYYtTFzLB1O">🔒 上锁</span>
+        </div>
+        <div class="step-body" data-page-node-id="ROI9ZLD4ck13SSEu47hIk5">
+          <div class="action-block" data-page-node-id="HL1fWHjWU1p7CmJuKlV0Nt">
+            <label class="action-label" data-page-node-id="ZOzFF1bl2EGywSTOemaTDL">4️⃣ 勾选要授予 Agent 的工具（至少 1 个）</label>
+            <div class="toggle-list" data-page-node-id="HmDFzKtQKzH1bKLdaFx2jT">
+              <label class="toggle-item" data-page-node-id="nDZEOvn08UOoMj89XlMfm6"><input type="checkbox" data-tool="search" checked data-page-node-id="NuCULIrSIpzy48v9zOwOAo"> <span class="toggle-name" data-page-node-id="K5yIGxbh1pB4xgPmbMPzQ4">🔍 联网搜索</span><span class="toggle-desc" data-page-node-id="DyRl6dEna1SiomA0ECpt36">搜最新信息</span></label>
+              <label class="toggle-item" data-page-node-id="a5MVcb7jJwBBNHvYwDRo69"><input type="checkbox" data-tool="sql" checked data-page-node-id="lTmQ5vEfbqCdaeAwYbvBIG"> <span class="toggle-name" data-page-node-id="39XZtRHrE8DE74abUvgR7f">🗄️ SQL 查询</span><span class="toggle-desc" data-page-node-id="eFTq99tEKkv5ZtOZBWwCES">只读查库</span></label>
+              <label class="toggle-item" data-page-node-id="4vaHEI80Fai768Jb3onlry"><input type="checkbox" data-tool="code" checked data-page-node-id="gsYEeaSlVElU6UzsP7FpAA"> <span class="toggle-name" data-page-node-id="BfbVeOhh5tHtHWp9lp0cU3">🐍 代码执行</span><span class="toggle-desc" data-page-node-id="5T5auqojr44IkaB0eAp9AQ">沙箱跑脚本</span></label>
+              <label class="toggle-item" data-page-node-id="MdkpnB9YtpL0OrlPJetQKn"><input type="checkbox" data-tool="http" data-page-node-id="HQl1S9KgO249s5KxI7gw1u"> <span class="toggle-name" data-page-node-id="lj6fGDEczrnntrMAoUBVtJ">🌐 HTTP 请求</span><span class="toggle-desc" data-page-node-id="s5ZngzSZFRMpLmlZXAIW7M">调外部 API</span></label>
+              <label class="toggle-item" data-page-node-id="3FZlYz2OFYWsgKYM3HsFFR"><input type="checkbox" data-tool="file" checked data-page-node-id="ojfvN8pQyw32lCAGBlMjeZ"> <span class="toggle-name" data-page-node-id="9GWcHlqTqWzs98qSsC0zPA">📁 文件读写</span><span class="toggle-desc" data-page-node-id="bH293dStbnjIkIJCB74HyZ">读日志写报告</span></label>
+              <label class="toggle-item" data-page-node-id="NWvxeilFxw1RnKoIfZIRVn"><input type="checkbox" data-tool="notify" data-page-node-id="cvUjPqxFEdrhtFzQCp9gpB"> <span class="toggle-name" data-page-node-id="qlAi77MpTmn7YF5y1bqOBN">📮 消息通知</span><span class="toggle-desc" data-page-node-id="8to7DJLjeJAyH39xeyeG9I">发 IM / 邮件</span></label>
+              <label class="toggle-item" data-page-node-id="EBopFJ6nxCVgibR2cXuaV3"><input type="checkbox" data-tool="ticket" data-page-node-id="G4Et1qX2DSHSIvDCDkQPEI"> <span class="toggle-name" data-page-node-id="B1a0cuxGS3TXBJ7YIoZ030">🎫 工单操作</span><span class="toggle-desc" data-page-node-id="mK0YN0G1syVEa2KsHwxsCX">建单 / 关单</span></label>
+              <label class="toggle-item" data-page-node-id="cjeQYB7vKsGXFy3uDpL7uG"><input type="checkbox" data-tool="write" data-page-node-id="lOuoJH1E3nqQvNSDW6BNpB"> <span class="toggle-name" data-page-node-id="qTvcsm8fVkoAZtCarqhmhn">✍️ 写操作（危险）</span><span class="toggle-desc" data-page-node-id="xbcDSM4u7yk4zTQnpdV1dJ">可改线上数据</span></label>
+            </div>
+          </div>
+          <div class="action-block" data-page-node-id="GK7JB9mQzybCn2Kay7oXAh">
+            <label class="action-label" data-page-node-id="loxmYRCBbE8REjvUqVf5De">5️⃣ 参数描述详尽程度</label>
+            <div class="type-selector" data-page-node-id="3PiPBVDBdyyc6clT230JMs">
+              <button class="opt-btn" data-action="schema" data-value="min" data-page-node-id="u9QxObBhGpO4c6xg3X6EGr">🪫 最简（只有类型）</button>
+              <button class="opt-btn active" data-action="schema" data-value="full" data-page-node-id="JrdX7n7yXq5Ri9wFlsAz0g">🔋 详尽（带示例 + 约束）</button>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer" data-page-node-id="gNEhDdXXhVmAPNDChv47CB">
+          <div class="step-hint" data-page-node-id="NSpSvmCK9JuQRj3C0757lQ">💡 提示：工具描述就是模型的「使用说明书」，写得含糊 = 一定调错参数</div>
+          <button class="step-complete-btn" data-step="2" data-page-node-id="OBJWtzydm5iDtx3JiIjv9v">✓ 完成注册 · 进入 ③ 挂载记忆</button>
+        </div>
+        <div class="step-output" hidden data-page-node-id="VdOC6J5uPn7OKE1E9C01gN"></div>
+      </div>
+
+      <!-- ③ 挂载记忆 -->
+      <div class="step-card locked" data-stage="offline" data-step="3" data-status="locked" data-page-node-id="Y60DdrAUSG3KWk7q9tC3uQ">
+        <div class="step-header" data-page-node-id="0tXYCbVSiy2XtnU2YUNqPP">
+          <span class="step-num-badge offline-num" data-page-node-id="NQFvjp3VnlUz1HBtrBy3vu">③</span>
+          <div class="step-info" data-page-node-id="zsfZjXnGx5yMCjbxl5gPhn">
+            <h3 class="step-title" data-page-node-id="A5yCUcU9pS1tyEz6sIiBBC">挂载记忆 <span class="step-en" data-page-node-id="4yPdSyEvX4AAOW1Ad936ib">Memory</span></h3>
+            <p class="step-desc" data-page-node-id="SyBhc1lEFMXEyIHCKHlEmf">让 Agent 记住对话、记住历史任务的结论、还要有地方打草稿</p>
+          </div>
+          <span class="step-state-badge state-locked" data-page-node-id="Rrqvs25wJayEFyYMIr2Og2">🔒 上锁</span>
+        </div>
+        <div class="step-body" data-page-node-id="C1NlInTCebD7mdQWUabG1z">
+          <div class="action-block" data-page-node-id="T3itkJqxYvIZBxb5alRGdn">
+            <label class="action-label" data-page-node-id="M1WVLYeAoOJSh2CY1Jz9gD">6️⃣ 选择记忆类型（可多选）</label>
+            <div class="toggle-list" data-page-node-id="crn5kpC8MrAXJzHempjgzG">
+              <label class="toggle-item" data-page-node-id="bByMkFrwLFY0gUNByLd1N7"><input type="checkbox" data-memory="buffer" checked data-page-node-id="JvqSRZJ3dpKx9pAmFiO5VT"> <span class="toggle-name" data-page-node-id="aQDsFvcOJ0taIGFDhMGyoW">💬 短期缓冲</span><span class="toggle-desc" data-page-node-id="NBo4mlNuWHsnhztdwk9aTa">最近 N 轮对话</span></label>
+              <label class="toggle-item" data-page-node-id="2qvFhWHI21Gv5XbPRDpSNU"><input type="checkbox" data-memory="vector" checked data-page-node-id="6nRPQFaujDRwtyxBWJRr3F"> <span class="toggle-name" data-page-node-id="ed6QczhP89gKlgSWCQDPDo">📚 长期向量记忆</span><span class="toggle-desc" data-page-node-id="Rb4ZVuAIWZrD2g29vBJx9k">历史任务检索</span></label>
+              <label class="toggle-item" data-page-node-id="El7Aoqqh5upSZcB1Dg6Yal"><input type="checkbox" data-memory="scratch" checked data-page-node-id="6n3HfNqsTTwxjlU0FdRjG7"> <span class="toggle-name" data-page-node-id="3dD46ZyuzPkE8OqHe6UF4L">📝 工作记忆</span><span class="toggle-desc" data-page-node-id="BWYWbgiRw1lWQedUyELqCU">草稿板 / 中间结论</span></label>
+              <label class="toggle-item" data-page-node-id="NSH3w4eV3AnzwevLM6Up6D"><input type="checkbox" data-memory="entity" data-page-node-id="QEGMwH7legwEKUcm3KILHM"> <span class="toggle-name" data-page-node-id="aZz0tP5qP9NvAP4UNpGRC4">👤 实体记忆</span><span class="toggle-desc" data-page-node-id="TmhSykZTZgbZST02RyYE8E">用户画像 / 偏好</span></label>
+              <label class="toggle-item" data-page-node-id="kue1OBKCi7hkqlUGaQC2qy"><input type="checkbox" data-memory="summary" data-page-node-id="hsPbRGJ5zSK0hC1GYWtZpf"> <span class="toggle-name" data-page-node-id="hRRVQkfnSBmbjSJ1FqeXaC">🗜️ 摘要记忆</span><span class="toggle-desc" data-page-node-id="kn9YVfTDATTBFcqkNhy369">摘要压缩历史</span></label>
+              <label class="toggle-item" data-page-node-id="ib7sajHOnBqVnsA2oGwlbt"><input type="checkbox" data-memory="episodic" data-page-node-id="mQHMND9mN0BcUTR1DAGZd6"> <span class="toggle-name" data-page-node-id="zstgjSVeWggQXzy2hSj0BM">🎬 情景记忆</span><span class="toggle-desc" data-page-node-id="gteqlSAXal0Z6D3lUqj8jf">成功/失败案例库</span></label>
+            </div>
+          </div>
+          <div class="action-block" data-page-node-id="QM10Mgrf3JUivNDfUUsrut">
+            <label class="action-label" data-page-node-id="bBsqmR3RMFtzlqI1RHcjj8">7️⃣ 上下文窗口预算</label>
+            <div class="slider-list" data-page-node-id="xDF1CLrNM74l32gzwCxNBq">
+              <div class="slider-item" data-page-node-id="CsQEOEBL3qmSKGYv7nSHNl">
+                <div class="slider-head" data-page-node-id="miuv0TTU8VFzR1WRYL7fpC">
+                  <span data-page-node-id="vRpEWEQhigL2OzsxPDeOMz">记忆注入上限</span>
+                  <span class="slider-value" data-page-node-id="HOpyN49Y6it37slcxZ2tEY"><span id="memory-val" data-page-node-id="Ho5qDALi5p9QmCsdOtlmVv">8</span>K tokens</span>
+                </div>
+                <input type="range" min="2" max="32" step="2" value="8" class="range-slider" id="memory-slider" data-page-node-id="FKVGEKLdsvyDms9QUoqxSw">
+                <div class="slider-ticks" data-page-node-id="loGnXUgNdoKCPUKdYHELMp"><span data-page-node-id="y2TBSQJ9ytpUS5MHM2iukr">2K</span><span data-page-node-id="PrCV7WJ7sR5JCyhTo4MQI0">16K</span><span data-page-node-id="rNm3IAmnSRmJ2TxoRYmp5C">32K</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer" data-page-node-id="f1eJNTnAdEeKM9WyU3FFNo">
+          <div class="step-hint" data-page-node-id="AAPTxictdgLrsXVB1gUulw">💡 提示：记忆不是越多越好，塞爆上下文反而让模型抓不住重点</div>
+          <button class="step-complete-btn" data-step="3" data-page-node-id="0lypnDRTqKoZErpDwUhqHY">✓ 完成挂载 · 进入 ④ 规划与护栏</button>
+        </div>
+        <div class="step-output" hidden data-page-node-id="4bqFu0ZeWDedsSXxMJNtyR"></div>
+      </div>
+
+      <!-- ④ 规划与护栏 -->
+      <div class="step-card locked" data-stage="offline" data-step="4" data-status="locked" data-page-node-id="li2oZPDoFLc2xKHLo7c1Ol">
+        <div class="step-header" data-page-node-id="p25eBCEBGAhzdVKwhjtGLU">
+          <span class="step-num-badge offline-num" data-page-node-id="KJZrsN8wRDSihi8VtDkSX1">④</span>
+          <div class="step-info" data-page-node-id="eyH6p6hnVbl5GzcTq947vw">
+            <h3 class="step-title" data-page-node-id="EqGHv8FV4DZJHRMUDEugEC">规划策略与护栏 <span class="step-en" data-page-node-id="kY7CbCycRbXWI474SCWVS1">Planning &amp; Guardrails</span></h3>
+            <p class="step-desc" data-page-node-id="Q9w52QNogREmghH1NmEoVX">决定 Agent 怎么想、最多走几步、哪些动作必须先问人</p>
+          </div>
+          <span class="step-state-badge state-locked" data-page-node-id="PGVRtBjWA9zCOos74IDROd">🔒 上锁</span>
+        </div>
+        <div class="step-body" data-page-node-id="qoHRIyREuJyZnBSXodPDTt">
+          <div class="action-block" data-page-node-id="6bzTbwiyPnk5qr9M37Yynr">
+            <label class="action-label" data-page-node-id="dcmHeXiEDy4zCp5RFsNM82">8️⃣ 选择规划范式</label>
+            <div class="strategy-selector" data-page-node-id="P28Wr5CsDf92wG7f9LwMDY">
+              <button class="opt-btn active" data-action="planning" data-value="react" data-page-node-id="21DFkLIFBg38xeDnKvioeF">🔁 ReAct（边想边做）</button>
+              <button class="opt-btn" data-action="planning" data-value="plan-exec" data-page-node-id="cwTJ7py1amZtoEgQD1rPCA">📋 Plan-and-Execute（先规划后执行）</button>
+              <button class="opt-btn" data-action="planning" data-value="reflexion" data-page-node-id="YLgaOxSOPohzjaBONiTe6Y">🪞 Reflexion（带自我反思）</button>
+              <button class="opt-btn" data-action="planning" data-value="multi" data-page-node-id="n10oM42GsE8eRuaU9E0wLX">👥 Multi-Agent（多智能体）</button>
+            </div>
+          </div>
+          <div class="action-block" data-page-node-id="oG1NilpIImx2fmUspAKTA2">
+            <label class="action-label" data-page-node-id="tzEPsqzUZy11enFZxzT3SU">9️⃣ 设置刹车（防止无限循环烧钱）</label>
+            <div class="slider-list" data-page-node-id="CuSXreCY5iiBKHQi41ww6S">
+              <div class="slider-item" data-page-node-id="6djGL2nuHobiFqJ3HyZxXQ">
+                <div class="slider-head" data-page-node-id="Mu0vltHkxC0yBwP5fFBWHj">
+                  <span data-page-node-id="GIBo49OQhcMg84l2HHgean">最大循环步数</span>
+                  <span class="slider-value" data-page-node-id="aOdgwdVhm7PNCHvFdVr28J"><span id="maxstep-val" data-page-node-id="hbbTVo5pYDi5Qj8HHM6OBL">15</span> 步</span>
+                </div>
+                <input type="range" min="3" max="50" step="1" value="15" class="range-slider" id="maxstep-slider" data-page-node-id="WtOwsjRDq5ZYv4kCe5RgYw">
+                <div class="slider-ticks" data-page-node-id="lQUCfLtJ2vADbgXf9Fwznl"><span data-page-node-id="7sMFDRj6BnRX5q9z8PO7Vb">3</span><span data-page-node-id="pEn0cbbasXmwMkoxd1zlXn">25</span><span data-page-node-id="lubC7HCqHILdzEf5Bk7ckc">50</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="action-block" data-page-node-id="pIbS4IqjRFpeS7pnX65gN7">
+            <label class="action-label" data-page-node-id="HJ7Ee8CrG6fhUeoM3N7Nrf">🔟 人在回路（Human-in-the-loop）</label>
+            <div class="type-selector" data-page-node-id="mBVejp4yI8Pu1lL4KZHG5d">
+              <button class="opt-btn" data-action="hitl" data-value="never" data-page-node-id="mbxjWr029FNj1wtGiPl4sC">🙅 不介入，全自动</button>
+              <button class="opt-btn active" data-action="hitl" data-value="risky" data-page-node-id="4siY2YuolmOiOiwVhixGJj">⚠️ 高风险动作需确认</button>
+              <button class="opt-btn" data-action="hitl" data-value="always" data-page-node-id="J6al8Qye4eXxW8TVsEcQJX">🧑‍💻 每步都需确认</button>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer" data-page-node-id="E7xRrwGate2cUR3eY142jp">
+          <div class="step-hint" data-page-node-id="jiD8EADcInBvLPwNWHs1d5">💡 提示：没有刹车的 Agent 是定时炸弹——循环失控 + 写操作 = 生产事故</div>
+          <button class="step-complete-btn" data-step="4" data-page-node-id="COMGZsiQOHHy9I7LChRbMv">✓ 完成装配 · 构建期结束 → 解锁运行期</button>
+        </div>
+        <div class="step-output" hidden data-page-node-id="lKIF4tkauu1Aad8jfWuBWb"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 运行期（默认锁定，构建期完成后才解锁） -->
+  <div class="rag-stage online locked" id="online-stage" data-page-node-id="DA3wADZAkyLEMh5alApa4K">
+    <div class="stage-header" data-page-node-id="IUtJLeqI5yN0NZ3bLrKp5F">
+      <div class="stage-tag" data-page-node-id="Px9LKYV4kJ0Ncmz41jNyAj">
+        <span class="stage-badge online-badge" data-page-node-id="Xzx0SpJ5lhk2bw01xMpaxJ">Runtime · 运行期</span>
+        <h3 data-page-node-id="2xlDZyRHrdZVh2C6k0bcxs">阶段二 · 自主循环</h3>
+      </div>
+      <p class="stage-desc" data-page-node-id="4mzhJnRw6WUEUJLJf2mbYA">任务进来后，Agent 开始「思考 → 行动 → 观察 → 再思考」的循环，直到判定目标达成或触发刹车</p>
+      <div class="stage-meta" data-page-node-id="dVIAMtiJeTCSkcodPE0068">
+        <span data-page-node-id="4AFkf5AlbDUdk0AD52xfHM">⏱ 耗时：秒级到分钟级（取决于循环轮数）</span>
+        <span data-page-node-id="QFQjaMRuIDX4EekEik165Q">🔁 频率：每个用户任务跑一遍</span>
+        <span data-page-node-id="PC8Sh19F77AQeIk6j55Jgx">🎯 进度：<span id="online-progress" data-page-node-id="XyN9tGs5CLSh6AxnCF5Jnc">0</span>/5</span>
+        <span id="online-locked-hint" class="locked-hint" data-page-node-id="AOIw53XGbjBtCccP51gGgz">🔒 需先完成构建期 4 步</span>
+      </div>
+    </div>
+
+    <div class="step-list" id="online-step-list" data-page-node-id="T8Ehdkjzc4opmFblxOMEzL">
+
+      <!-- ⑤ 接收任务 -->
+      <div class="step-card locked" data-stage="online" data-step="5" data-status="locked" data-page-node-id="APGqul9sKHvOaB2rLaUg7v">
+        <div class="step-header" data-page-node-id="fIy02L4OOeobA36Z3knHyk">
+          <span class="step-num-badge online-num" data-page-node-id="H1YEx722qTu4wAA4TFV7Uv">⑤</span>
+          <div class="step-info" data-page-node-id="ztOnvqKoTKyjijLwoDflVy">
+            <h3 class="step-title" data-page-node-id="AihaEThYS9FzcRgZOo6jd7">接收任务 <span class="step-en" data-page-node-id="ZVSMLpqlpCkXVDyQnYArLj">Task Input</span></h3>
+            <p class="step-desc" data-page-node-id="q4eUo5rEBkIga9RV9kXPMN">解析用户意图、抽取实体与约束，把自然语言变成可执行的目标</p>
+          </div>
+          <span class="step-state-badge state-locked" data-page-node-id="sQvHyHXWjR4Dxm0lj90Tzs">🔒 上锁</span>
+        </div>
+        <div class="step-body" data-page-node-id="AZkJqCwe1yl8tBlABMUmYY">
+          <div class="action-block" data-page-node-id="DW7zn3U0dTiIFDyzCPhUh0">
+            <label class="action-label" data-page-node-id="XypQn2Ulcu3j087OxqApBk">1️⃣1️⃣ 输入一个交给 Agent 的任务</label>
+            <div class="query-input-card" data-page-node-id="2YJ5Qg7kHh6Ejmu2SUDfu2">
+              <textarea id="agent-task" class="query-textarea" rows="2">线上订单服务从今天 14:00 开始大量报 502，帮我定位原因并给出修复方案</textarea>
+              <div class="query-presets" data-page-node-id="W1AJdYe9j3WPDMbY7Sc1mp">
+                <button class="preset-btn" data-task="线上订单服务从今天 14:00 开始大量报 502，帮我定位原因并给出修复方案" data-page-node-id="pcu9dQicUwqJlhwW4hmvTM">故障排障</button>
+                <button class="preset-btn" data-task="帮我把上个月的销售数据拉出来，找出转化率下滑最严重的三个渠道并分析原因" data-page-node-id="XGoGVrsrfs5wSBuAyyOi5m">数据分析</button>
+                <button class="preset-btn" data-task="整理这周所有 P0 工单的处理进展，生成周报并同步给相关负责人" data-page-node-id="Fd1bitcflHB6TREpV7ctYP">工单周报</button>
+                <button class="preset-btn" data-task="对比我们和三家竞品的定价策略，输出一份可以给老板看的对比文档" data-page-node-id="CHtPH24QKiXtI7EgFaw7YO">竞品调研</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer" data-page-node-id="7Pc0lkonDVBIwrLUc2aBmD">
+          <div class="step-hint" data-page-node-id="eJuV6DuCicDJugGF4hVRGy">💡 提示：任务里的时间、范围、对象越明确，Agent 的第一次规划就越准</div>
+          <button class="step-complete-btn" data-step="5" data-page-node-id="FVgjg8eVP1QjRErcmwDpMU">✓ 完成解析 · 进入 ⑥ 思考规划</button>
+        </div>
+        <div class="step-output" hidden data-page-node-id="eZnGkHG8i4o8OX78eCj2RK"></div>
+      </div>
+
+      <!-- ⑥ 思考规划 -->
+      <div class="step-card locked" data-stage="online" data-step="6" data-status="locked" data-page-node-id="UoiBo8wpDrZg8TOWPuM0WM">
+        <div class="step-header" data-page-node-id="OwcdXIMdZRabNQeP6RiL0i">
+          <span class="step-num-badge online-num" data-page-node-id="8D7zswDAg4QAVtbBsBrX0z">⑥</span>
+          <div class="step-info" data-page-node-id="UalQHKqfhb9z2oI3fz05r6">
+            <h3 class="step-title" data-page-node-id="HGKeE9entJ44f63Oj22Ea3">思考与规划 <span class="step-en" data-page-node-id="0BIvyop9sJyZRaOofKu5Hr">Thought / Planning</span></h3>
+            <p class="step-desc" data-page-node-id="2rPnS5sLyuGCf9seObWsGP">把大目标拆成子任务序列，并判断第一步该干什么</p>
+          </div>
+          <span class="step-state-badge state-locked" data-page-node-id="WwFSkwPgnjBT4jQPimGVcp">🔒 上锁</span>
+        </div>
+        <div class="step-body" data-page-node-id="z74ESoe5gnzjxsXewPj8UU">
+          <div class="action-block" data-page-node-id="FmDtG0WaRtaZyNeAtPJFaB">
+            <label class="action-label" data-page-node-id="yC8R4uCZi9FJjLK2tKTt4V">1️⃣2️⃣ 推理深度</label>
+            <div class="type-selector" data-page-node-id="YlG4Tb9hlCGZx9hbDBR48F">
+              <button class="opt-btn" data-action="thinking" data-value="fast" data-page-node-id="Q5Pk6656B6p7cATLpvHHeM">⚡ 快思考（省 token）</button>
+              <button class="opt-btn active" data-action="thinking" data-value="deep" data-page-node-id="poxOBF2ArkuEfICWDHJ5FU">🧠 深思考（带思维链）</button>
+              <button class="opt-btn" data-action="thinking" data-value="tree" data-page-node-id="3WDDtJ5pFwMNzcTWECQA79">🌳 思维树（多方案择优）</button>
+            </div>
+          </div>
+          <div class="action-block" data-page-node-id="v8lnP9k1kjTig5eBUCKem2">
+            <label class="action-label" data-page-node-id="9q0sGhssmleUBkG6bpzScv">1️⃣3️⃣ 规划产物显式化</label>
+            <div class="toggle-list" data-page-node-id="3wmdfd6CQCytHJxVCRNr2l">
+              <label class="toggle-item" data-page-node-id="HOFWw6K6OGzxlaKngpzNJQ"><input type="checkbox" data-flag="todo" checked data-page-node-id="LaAi02NHkL77xeAotUnDGq"> <span class="toggle-name" data-page-node-id="jSPd7i2xll7PNAaD1S1KbM">📝 输出 TODO 列表</span><span class="toggle-desc" data-page-node-id="29FfSiTSKL51yiKzZdpfyp">先列计划再动手</span></label>
+              <label class="toggle-item" data-page-node-id="eFTGGH3mW16yfcAb1WMNpf"><input type="checkbox" data-flag="critique" checked data-page-node-id="UXxy9e9eC8I53Hq5e3JbQL"> <span class="toggle-name" data-page-node-id="8XAhVdCx9X6pUhY5ON9CHj">🤔 自我质疑</span><span class="toggle-desc" data-page-node-id="LLfciX7kO0GpfKJohNeBSP">计划先自检一遍</span></label>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer" data-page-node-id="gSA6RSDREbsf9lh1jyckq4">
+          <div class="step-hint" data-page-node-id="G1dmyQVa8i7cc9KRv1lrLt">💡 提示：让 Agent 把计划「说出来」，能显著降低它一头扎进错误方向的风险</div>
+          <button class="step-complete-btn" data-step="6" data-page-node-id="2JPb97ELPEqYuvs14rUNv2">✓ 完成规划 · 进入 ⑦ 调用工具</button>
+        </div>
+        <div class="step-output" hidden data-page-node-id="JP2td2GQdmo7wdBKBqxRXU"></div>
+      </div>
+
+      <!-- ⑦ 调用工具 -->
+      <div class="step-card locked" data-stage="online" data-step="7" data-status="locked" data-page-node-id="exw2XmLvy8fvL3SCSHWF1B">
+        <div class="step-header" data-page-node-id="JlNiCkX1t9z9WXX7upVNEx">
+          <span class="step-num-badge online-num" data-page-node-id="CJD1eL4dE4ovIm2v6HjuJK">⑦</span>
+          <div class="step-info" data-page-node-id="VqiYUJQJx9jn5AebX4yqdf">
+            <h3 class="step-title" data-page-node-id="pSW6dLjZRlmSXCagH0LCCO">调用工具 <span class="step-en" data-page-node-id="nMGZyC6BvqY0vWMfBfXkSZ">Action / Tool Call</span></h3>
+            <p class="step-desc" data-page-node-id="zzsFjxZLlAT8DF7lagTXYc">模型输出结构化的工具调用指令，由执行器真正落地</p>
+          </div>
+          <span class="step-state-badge state-locked" data-page-node-id="9Zz33SSEYiAg02V4DZ0d9y">🔒 上锁</span>
+        </div>
+        <div class="step-body" data-page-node-id="uMtlKIl0V3C2h2KKRJYOPa">
+          <div class="action-block" data-page-node-id="0ZQXODlIlnxvCVTMnMY14M">
+            <label class="action-label" data-page-node-id="O5lc3LECb37E9aGfmDnuPk">1️⃣4️⃣ 执行模式</label>
+            <div class="type-selector" data-page-node-id="xQELcVEQgY760zL9o53W1Q">
+              <button class="opt-btn active" data-action="exec-mode" data-value="auto" data-page-node-id="Y9HQOHBix6KV5G11Z7DEk3">🤖 自动执行</button>
+              <button class="opt-btn" data-action="exec-mode" data-value="parallel" data-page-node-id="nGSO8qw88zIJxmw5xO70ON">⚡ 并行调用</button>
+              <button class="opt-btn" data-action="exec-mode" data-value="confirm" data-page-node-id="JmAtoQq8rKrDn2BLjoJgxH">✋ 调用前确认</button>
+            </div>
+          </div>
+          <div class="action-block" data-page-node-id="HRaISFeucl08eeeG4pRbbK">
+            <label class="action-label" data-page-node-id="8FwQ7PrJaUubvObE669i5X">1️⃣5️⃣ 工具调用容错</label>
+            <div class="type-selector" data-page-node-id="JkMHf6TsHW8fLq1jKxXBmZ">
+              <button class="opt-btn active" data-action="tool-retry" data-value="retry" data-page-node-id="dCLQuxHj9zDQOEfFnjTOCt">🔁 失败自动重试</button>
+              <button class="opt-btn" data-action="tool-retry" data-value="fallback" data-page-node-id="0WmZKNDCXvJHGpI2HFEm58">🧯 换备用工具</button>
+              <button class="opt-btn" data-action="tool-retry" data-value="stop" data-page-node-id="gRxu7U33Ixi9UTckNtTduH">🛑 立即中断</button>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer" data-page-node-id="lNhqQtSjLB95wXBdhNeej2">
+          <div class="step-hint" data-page-node-id="s6dtKFYgkN1WbTFXKjIoe2">💡 提示：工具调用要传「结构化参数 + 幂等键」，否则重试可能造成重复写</div>
+          <button class="step-complete-btn" data-step="7" data-page-node-id="62gx6w3nFDpiY0dn0ERhEz">✓ 完成调用 · 进入 ⑧ 观察结果</button>
+        </div>
+        <div class="step-output" hidden data-page-node-id="vU0aM4PozgFqEnox93RkDl"></div>
+      </div>
+
+      <!-- ⑧ 观察结果 -->
+      <div class="step-card locked" data-stage="online" data-step="8" data-status="locked" data-page-node-id="2WaGvQav6hojO3CJ7aurpl">
+        <div class="step-header" data-page-node-id="GQI7NBKaRSFLEPEjls3bXS">
+          <span class="step-num-badge online-num" data-page-node-id="aCNp5BP149mpM5dbBRdjN8">⑧</span>
+          <div class="step-info" data-page-node-id="X29kGJW1Vbns5ER5O6dlDr">
+            <h3 class="step-title" data-page-node-id="7MAJeocvncGi2pTcfKp78B">观察与回填 <span class="step-en" data-page-node-id="YC3i8XHLQTizkShIbZSSJs">Observation</span></h3>
+            <p class="step-desc" data-page-node-id="KGEjFtEvApZYIkV1vjz1Fa">工具返回结果（或报错）被写回上下文，成为下一轮思考的输入</p>
+          </div>
+          <span class="step-state-badge state-locked" data-page-node-id="0N9hn7CqurxvKujv7k1ywb">🔒 上锁</span>
+        </div>
+        <div class="step-body" data-page-node-id="DpObNv5kt2gq7TC22bf1Rq">
+          <div class="action-block" data-page-node-id="Eh29GIO9NuIya3amFBs2XY">
+            <label class="action-label" data-page-node-id="nZAqYlpYIBPjiDxaydtSDR">1️⃣6️⃣ 观察结果处理策略</label>
+            <div class="type-selector" data-page-node-id="xKYv5kAVhQzTJNAvgIC6pE">
+              <button class="opt-btn active" data-action="obs" data-value="compress" data-page-node-id="I3JRYq6c4NJIdIaCmdcQzS">🗜️ 压缩摘要后回填</button>
+              <button class="opt-btn" data-action="obs" data-value="raw" data-page-node-id="8enBC9XWFc1IQtHEwB3jML">📄 原样回填</button>
+              <button class="opt-btn" data-action="obs" data-value="filter" data-page-node-id="QsicYJs3sgT0vDGafyFnSf">🎯 只回填关键字段</button>
+            </div>
+          </div>
+          <div class="action-block" data-page-node-id="6iUTbdiE6SVE8a7vb7LKKR">
+            <label class="action-label" data-page-node-id="VEKD5m68hbqqV1tHL9lUdP">1️⃣7️⃣ 错误处理策略</label>
+            <div class="type-selector" data-page-node-id="ceCjAOkYKe5e9MEk9IisnS">
+              <button class="opt-btn active" data-action="error-policy" data-value="reflect" data-page-node-id="mMqw0SIqYkW1u12G9zgqrI">🤔 反思原因再重试</button>
+              <button class="opt-btn" data-action="error-policy" data-value="replan" data-page-node-id="m2ThwEcKg9excu6g60KY3J">🧭 重新规划路径</button>
+              <button class="opt-btn" data-action="error-policy" data-value="escalate" data-page-node-id="OV1snGef3okGCM2O4RnjDI">☎️ 升级给人工</button>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer" data-page-node-id="9t80oM4ECMLNItqc5zRjsa">
+          <div class="step-hint" data-page-node-id="5pbA9iNb5QVXAOkN3jUwAj">💡 提示：新手最容易忽略这一步——把 10 万行日志原样塞回去，上下文直接爆掉</div>
+          <button class="step-complete-btn" data-step="8" data-page-node-id="m5Zg0xXQKsiR8e94TDaQNj">✓ 完成观察 · 进入 ⑨ 收敛交付</button>
+        </div>
+        <div class="step-output" hidden data-page-node-id="94DHr3AWr5OPMrbZUEInDv"></div>
+      </div>
+
+      <!-- ⑨ 收敛交付 -->
+      <div class="step-card locked" data-stage="online" data-step="9" data-status="locked" data-page-node-id="bHDOiJqbYQFC6kaWl46xhP">
+        <div class="step-header" data-page-node-id="ARp3KW0uW9h8pCIhikJV4j">
+          <span class="step-num-badge online-num" data-page-node-id="3l5UtZgRYATnzAuCaD6HQ5">⑨</span>
+          <div class="step-info" data-page-node-id="rcPixWuU5bgtAxuXglj5qG">
+            <h3 class="step-title" data-page-node-id="0nnFUKLGhMGAKLVoAhARzh">循环收敛与交付 <span class="step-en" data-page-node-id="uReDSqjg3nusXdcnqpODE6">Loop &amp; Final Answer</span></h3>
+            <p class="step-desc" data-page-node-id="P3SHWmYbXWHdriTs5JybkV">每轮结束都要判断：目标达成了吗？没达成继续循环，达成了就交付</p>
+          </div>
+          <span class="step-state-badge state-locked" data-page-node-id="nbogtHtMgcDGNVVZW6fbi1">🔒 上锁</span>
+        </div>
+        <div class="step-body" data-page-node-id="3ol9E4PpDbz0t2bZ2tfACp">
+          <div class="action-block" data-page-node-id="ldxdKEiLS3CywbbUhBTla7">
+            <label class="action-label" data-page-node-id="MqrOXzQ1GK5AQz8L3Vc0m8">1️⃣8️⃣ 终止条件</label>
+            <div class="type-selector" data-page-node-id="eBvhlOOfexrCOEQYdFmYaH">
+              <button class="opt-btn active" data-action="terminate" data-value="goal" data-page-node-id="Nkizc6Palh5gparbptGJFO">🎯 目标达成即停</button>
+              <button class="opt-btn" data-action="terminate" data-value="confidence" data-page-node-id="p06gF2YFSqYGMimJQBwXis">📊 置信度阈值</button>
+              <button class="opt-btn" data-action="terminate" data-value="budget" data-page-node-id="DlTBBVmv7D5urjnXOSQ2QS">💰 预算耗尽即停</button>
+            </div>
+          </div>
+          <div class="action-block" data-page-node-id="mRQhhnt77EO7AIVWWH2B1v">
+            <label class="action-label" data-page-node-id="07xVJHAsZ5KGCzTQRB3c09">1️⃣9️⃣ 交付格式</label>
+            <div class="type-selector" data-page-node-id="4HvUuJbRguolUsanJ14ZGS">
+              <button class="opt-btn" data-action="output-format" data-value="report" data-page-node-id="GYUSBoYOmyZ5mNN4way2bN">📄 结构化报告</button>
+              <button class="opt-btn active" data-action="output-format" data-value="both" data-page-node-id="ifxwj5jhxiL15geTtLs5eX">📄+🧾 报告 + 轨迹</button>
+              <button class="opt-btn" data-action="output-format" data-value="raw" data-page-node-id="tlqkMyH6EsXVvMazAKgGyj">🧾 只要原始结论</button>
+            </div>
+          </div>
+        </div>
+        <div class="step-footer" data-page-node-id="tiB9jyGeYF2x1gFKFSn5vA">
+          <div class="step-hint" data-page-node-id="xNCtQe0IOLo0Cp4YHx11Ds">💡 提示：一定要保留完整 Trace，出问题时唯一能复盘的就是它</div>
+          <button class="step-complete-btn" data-step="9" data-page-node-id="gOqRAGRNiyTN6ju4PkodYE">✓ 完成交付 · 观看完整 Trace</button>
+        </div>
+        <div class="step-output final-output" hidden data-page-node-id="VAr9WvYYssCUc9rCvgfltw"></div>
+      </div>
+    </div>
+  </div>
+
+    </div><!-- /flow-main -->
+  </div><!-- /flow-layout -->
+
+  <!-- 数据飞轮 -->
+  <div class="rag-flywheel" data-page-node-id="ewDWYVGO5sPM3z1IBek2y0">
+    <div class="flywheel-content" data-page-node-id="fQe9EQ0wuYHKWVnRKNp3HS">
+      <div class="flywheel-icon" data-page-node-id="n7HCIYAzrMXpqpE97qeBcG">🔄</div>
+      <div class="flywheel-text" data-page-node-id="qb4ss0eh16x3hID34wY6TD">
+        <strong data-page-node-id="aHKXvif1AJOpPWqc0D6iwp">经验飞轮（Experience Flywheel）</strong>
+        <p data-page-node-id="Kc4cFwzK9965ix2229uUtM">Trace 采集 → 失败归因 → 工具/提示词优化 → 回放评测 → Agent 成功率提升 → 承接更复杂的任务</p>
+      </div>
+    </div>
+    <svg class="flywheel-svg" viewBox="0 0 600 40" data-page-node-id="dqbc0si25LFUpN0FTkzb5G">
+      <defs data-page-node-id="iGRUIpy7mW3WNI0SNkzZKB">
+        <marker id="fly-arrow" viewBox="0 0 10 10" refX="8" refY="5"
+          markerWidth="6" markerHeight="6" orient="auto-start-reverse" data-page-node-id="D6fwjKXgpTBo8xyxllFAFC">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="currentColor"
+            stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" data-page-node-id="5iE2WEJi9oPNSrIU8mUy0s"/>
+        </marker>
+      </defs>
+      <path d="M 20 20 Q 290 -20 580 20" fill="none" stroke="rgba(168,85,247,0.6)"
+        stroke-width="2" stroke-dasharray="6,4" marker-end="url(#fly-arrow)" data-page-node-id="RxdpcfC9QOBIQiKnWxMVfU"/>
+    </svg>
+  </div>
+</section>
+
+<!-- 四、Agent 6 件套 -->
+<section id="components" class="section" data-page-node-id="78pHKgcKRteeHrJtK3G9HZ">
+  <div class="section-head" data-page-node-id="IAETwkJHwV2npMHrAeGwFR">
+    <span class="section-num" data-page-node-id="skxG6o41jPRon8mBR1gdyr">04</span>
+    <h2 data-page-node-id="TPQGh6dGobFzWY52hLd2Hv">Agent 6 件套 · 搭建一个生产级智能体的必备组件</h2>
+    <p data-page-node-id="VXwJ5m367kcDdsSMOYuYed">每一个组件都有 3-5 个主流选型 · 鼠标悬停查看详情</p>
+  </div>
+  <div class="component-grid" data-page-node-id="HcHz8u7EnvmgyzONtbwkQG">
+    <div class="component-card" data-tip="Agent 的推理内核。决定它有多聪明、多贵、多快。生产环境常做多模型路由：简单步骤用小模型，关键决策用大模型。" data-page-node-id="Keybb7iHmaxCyYACyPV2S5">
+      <div class="comp-num" data-page-node-id="JBgFfwDOUs5gd8mM2V6M4Y">01</div>
+      <div class="comp-icon" data-page-node-id="vnJJqjdFip3Bw9D6fXOSsa">🧠</div>
+      <h3 data-page-node-id="g3YgXPWHFB7ASUfxmlGIYK">大脑 LLM</h3>
+      <p data-page-node-id="OneoaQ3owHfRvpQY8GXSwR">负责推理、决策、生成工具调用指令</p>
+      <div class="comp-tags" data-page-node-id="tXyfzVFPA5qCpvaJBuChCS"><span class="tag" data-page-node-id="2Mn0xHObkWBxrD0KckMDeQ">GPT-4o</span><span class="tag" data-page-node-id="0KZRlkS7Y5QSsvHJACIDde">Claude</span><span class="tag" data-page-node-id="6Y41g0fX2piLE7fhgu2DF8">Qwen</span></div>
+    </div>
+    <div class="component-card" data-tip="把大目标拆成可执行步骤。ReAct 边想边做、Plan-and-Execute 先列表再执行、Reflexion 失败后自我复盘。" data-page-node-id="pU7BKKqwAGiqVaZzglSiaJ">
+      <div class="comp-num" data-page-node-id="vTYHCkiwWnUdjSpRpTi0Zl">02</div>
+      <div class="comp-icon" data-page-node-id="WJSQhPXy2Nk7ZgWkAUkQt5">🧭</div>
+      <h3 data-page-node-id="OuA3O6SaKeCc0BJKERYmLb">规划器 Planner</h3>
+      <p data-page-node-id="qyx2K9HBZzT4OGxiMev4VM">任务拆解、路径选择、动态重规划</p>
+      <div class="comp-tags" data-page-node-id="WJOMMfNZmfDozXxa9w8CeJ"><span class="tag" data-page-node-id="lSyKAMXxABSgIqx6u897h2">ReAct</span><span class="tag" data-page-node-id="3R7V8T5QLlBgHUEsLYRvSw">Plan-Execute</span><span class="tag" data-page-node-id="koVlgDcHoOOcmN7jwtCNoS">Reflexion</span></div>
+    </div>
+    <div class="component-card" data-tip="短期缓冲记住最近几轮对话；长期向量记忆存历史任务；工作记忆是模型的计算草稿纸。上下文预算管理是难点。" data-page-node-id="bN05fXUK721NX1cfbmGaZf">
+      <div class="comp-num" data-page-node-id="8Tl9mgwBXswkOFaDpbjKKZ">03</div>
+      <div class="comp-icon" data-page-node-id="SLwwnVmoYFLTIaSL5ryUlB">📚</div>
+      <h3 data-page-node-id="Kg7XgyVXX4MzLZJzrIzBiT">记忆 Memory</h3>
+      <p data-page-node-id="jatb7KlgDHRgzWKwAvgTIZ">短期对话 / 长期检索 / 工作草稿三层</p>
+      <div class="comp-tags" data-page-node-id="V11jqjvjLnV03wfUtRbRoI"><span class="tag" data-page-node-id="6TbVIyngDCh8TbgVG35hAM">Buffer</span><span class="tag" data-page-node-id="seZDD9qMgGce9eEZF9cu3I">Vector</span><span class="tag" data-page-node-id="ghQ6fyZW3h702eq8vHkRGe">Scratchpad</span></div>
+    </div>
+    <div class="component-card" data-tip="Agent 的手脚。通过 Function Calling 或 MCP 协议接入搜索、数据库、代码沙箱、企业 API。工具描述的质量直接决定调用准确率。" data-page-node-id="jB0HU8ihFmxCcAPstTztCz">
+      <div class="comp-num" data-page-node-id="xsAwdn9YtQ6AKB2ATQI9G8">04</div>
+      <div class="comp-icon" data-page-node-id="TTdHH7XpkQacCWsEwvSxcu">🛠️</div>
+      <h3 data-page-node-id="hMsMkkEtkYdS4MARfioZbk">工具 Tools</h3>
+      <p data-page-node-id="VeKPK8rGR3SvEWfqTCANCi">搜索 / 数据库 / 代码 / 企业系统 API</p>
+      <div class="comp-tags" data-page-node-id="36fgl9laufPr08jJsu6Gq5"><span class="tag" data-page-node-id="4CYhXxBis3WDZ4C9odJSxW">Function Call</span><span class="tag" data-page-node-id="4F5ctB38Djv7EoX74XFL8T">MCP</span><span class="tag" data-page-node-id="v7HtGdUiUO8C2F7k2xBXlf">OpenAPI</span></div>
+    </div>
+    <div class="component-card" data-tip="真正执行工具调用的运行时：解析参数、鉴权、调用、超时控制、重试、结果裁剪。代码执行必须在沙箱里跑。" data-page-node-id="ZAkRw2PcfDIDgoCiRqT8aF">
+      <div class="comp-num" data-page-node-id="TnOHEoDQTPfp5yR0Tr6soV">05</div>
+      <div class="comp-icon" data-page-node-id="pklQXjmgWwpMpQVV63Z2xx">⚙️</div>
+      <h3 data-page-node-id="x9fZmfzceEBVUKe9uV2Tx8">执行器 Executor</h3>
+      <p data-page-node-id="Dv1eAPYDZYOdGIA8zvL2t5">参数校验、鉴权、调用、超时与重试</p>
+      <div class="comp-tags" data-page-node-id="1CCVo7XAPNweFtjzWXltVJ"><span class="tag" data-page-node-id="8NT7L9ECrGrfT1rfsAQjpc">Sandbox</span><span class="tag" data-page-node-id="EKqyAnaSlb93CiBqaY6BcN">Retry</span><span class="tag" data-page-node-id="2pwZd6KA9EXdpOzkqRuI3q">Timeout</span></div>
+    </div>
+    <div class="component-card" data-tip="护栏是 Agent 的安全带：最大步数、成本上限、工具白名单、敏感操作人工确认、输入输出内容过滤。没有护栏不能上生产。" data-page-node-id="z2hO9DHC7WMqhODXzUNEyp">
+      <div class="comp-num" data-page-node-id="nWIr05PlPo89hn6EJ9NuZW">06</div>
+      <div class="comp-icon" data-page-node-id="3YTgYDiuBn9RUXPXXeSE6D">🛡️</div>
+      <h3 data-page-node-id="r484wH2J24CszA0EEuAzah">护栏 Guardrails</h3>
+      <p data-page-node-id="1MuWOX0tDwirqaP8t3MlXV">步数上限、成本熔断、权限管控、人工确认</p>
+      <div class="comp-tags" data-page-node-id="FAIFGEclkrs9w9bQRxFWpx"><span class="tag" data-page-node-id="iWshU6EfWe1JtylDs946fU">Max Steps</span><span class="tag" data-page-node-id="l5sp3HG6AKcIEDBfmxUJRk">HITL</span><span class="tag" data-page-node-id="PuRSjPgD8zDDwMbFbfAbaS">ACL</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 五、进阶 Agent -->
+<section id="advanced" class="section section-alt" data-page-node-id="0tVW6SbLRWOleKk5BpIcvT">
+  <div class="section-head" data-page-node-id="ZDb4w72Sh2uPstagt1f6yM">
+    <span class="section-num" data-page-node-id="uw7nAzgxxjN38jwCpzido5">05</span>
+    <h2 data-page-node-id="Gc3oxMTI5tanPlZe6MaypJ">进阶 Agent · 从单次调用到自主协作</h2>
+    <p data-page-node-id="VS3ZKxsCqbK7Nj7yOalEK3">四层进化路径 · 自主性越高，能力越强，也越难控</p>
+  </div>
+  <div class="advanced-timeline" data-page-node-id="j5DQnJELhgbK4ZccZ9sjqG">
+    <div class="timeline-track" data-page-node-id="8wSUbiXBe9FYq3qocOCu4X">
+      <div class="timeline-node" data-page-node-id="yO5p5mErEKOYT80A6dF96F">
+        <div class="tl-badge" data-page-node-id="mE8pcLRuewQpOLVhfEI7n3">L1</div>
+        <h4 data-page-node-id="n78bqY1IVRAq0EJpraSiFg">工具调用</h4>
+        <p data-page-node-id="nsuGvWs0giaT8rTiyjFwzj">Function Calling：一问一答中夹带一次工具调用，没有循环</p>
+        <ul data-page-node-id="d60bR6tc1puQq85GElZrQn">
+          <li data-page-node-id="n0eMQedAxgHqgXwEjMgDNh">单轮：问 → 调工具 → 答</li>
+          <li data-page-node-id="vF5fBMLOOVUbf3NxEFoncm">无记忆、无规划</li>
+          <li data-page-node-id="L7hriiwl0kbPCMPY6pSycx">适合简单查询类场景</li>
+        </ul>
+      </div>
+      <div class="timeline-node highlight" data-page-node-id="A6PNkPWmXhGT9VeRbVrI6S">
+        <div class="tl-badge" data-page-node-id="wMGT6MItZiuF8uBP8jzekl">L2</div>
+        <h4 data-page-node-id="7v44fOClBfoyCxmCSZrvXB">ReAct 循环</h4>
+        <p data-page-node-id="nu2FvICnqNAytvCnFTGTiX">推理与行动交替进行，边做边看，直到达成目标</p>
+        <ul data-page-node-id="TvFvHcrKDQEGZm0CmGjpSR">
+          <li data-page-node-id="XvToDT9qu6q5VUHAK9voGG">Thought → Action → Observation 循环</li>
+          <li data-page-node-id="Q3ieIBLYXfWtRljvtXFz8H">能处理多步骤任务</li>
+          <li data-page-node-id="dSiT1NYE1oEtIJlI6CXZmV">工业界最主流的范式</li>
+        </ul>
+      </div>
+      <div class="timeline-node highlight" data-page-node-id="cKpFocB93AeG2DKEY1YpY0">
+        <div class="tl-badge" data-page-node-id="2MEojQwsgHdnAo7b6tFscx">L3</div>
+        <h4 data-page-node-id="Z2CuRoHlIT5lWnU33V3MCc">规划式 Agent</h4>
+        <p data-page-node-id="AAqCm0c5EPg8Udaqj2MZHm">先出完整计划再执行，失败后重新规划或自我反思</p>
+        <ul data-page-node-id="0dZWSKsivc0mdOD75cXeuo">
+          <li data-page-node-id="cASafc8YqjqfaCk9f9Bekj">Plan-and-Execute 两段式</li>
+          <li data-page-node-id="hpPZEkz9bMWpf4vMNK6Ikb">Reflexion 引入失败复盘</li>
+          <li data-page-node-id="Gs16Alh6BfFVee874Ib4wH">长任务更稳、更省 token</li>
+        </ul>
+      </div>
+      <div class="timeline-node top" data-page-node-id="qwSqeiDDlwEPSSVYXKUBYj">
+        <div class="tl-badge" data-page-node-id="TttkXQ0EXGaeDhtlobCFTb">L4</div>
+        <h4 data-page-node-id="cMYmmVBbd3oE7nt6wxtE1t">多智能体协作</h4>
+        <p data-page-node-id="1uQoBJdHUpyFFCuKTsvqQ3">多个专业 Agent 分工协作，有调度者也有执行者</p>
+        <ul data-page-node-id="Qe4DwgLs7HWIw3mG2PKLP5">
+          <li data-page-node-id="3tMsM6znSTbWPzrKifMshm">Manager-Worker 架构</li>
+          <li data-page-node-id="xpQLoPMr1rkDEfuzdxJFez">角色分工 + 结果互审</li>
+          <li data-page-node-id="fovF1asObSCfsMtcxP4m5g">复杂项目级任务</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="advanced-grid" data-page-node-id="Sso0Pd7EGuVXBIZLPHnD7M">
+    <div class="adv-card" data-page-node-id="yWXyH7Y9CXvs5iBkmo46Bf">
+      <div class="adv-emoji" data-page-node-id="XRjyViKX1FGlGWZbk9m7bb">🔁</div>
+      <h4 data-page-node-id="oZKdUgRz2M3GGMbd96VxkL">ReAct（Reasoning + Acting）</h4>
+      <p data-page-node-id="VBIWVxbJARdZrYioXTzU1C">让模型在每一步先输出一段思考，再决定调用哪个工具，拿到结果后继续思考。把「想」和「做」交错起来，是当前最通用的 Agent 骨架。</p>
+      <code class="adv-code" data-page-node-id="8pSSsQsJTSlPIfqAjQPX6s">Thought → Action → Observation → Thought → ... → Answer</code>
+    </div>
+    <div class="adv-card" data-page-node-id="XAKVCbzPpwtDlfSOsAaREP">
+      <div class="adv-emoji" data-page-node-id="CvHrDFaLXf1ipR96ABGCaZ">📋</div>
+      <h4 data-page-node-id="qWeV4k0u8w8rBLh335xu7Z">Plan-and-Execute</h4>
+      <p data-page-node-id="BWEGvWWWeEeoP5xSybZTCP">先用强模型做一次完整的任务规划，再逐步执行。适合步骤明确的长任务，token 消耗更低，但计划一旦错了整条链路都会偏。</p>
+      <code class="adv-code" data-page-node-id="GBrInFRHtZj2PcrUOHxYer">目标 → 完整计划 → [Step1, Step2, ...] → 顺序执行</code>
+    </div>
+    <div class="adv-card" data-page-node-id="47q0pIlnFAz8d9UC1AkDVQ">
+      <div class="adv-emoji" data-page-node-id="ASkPAaRNglYuJxRccxmLJ5">🪞</div>
+      <h4 data-page-node-id="a3LYM1G4k6RysaV2mzwEaB">Reflexion（自我反思）</h4>
+      <p data-page-node-id="pLgBXoFCl28kabLe53F0Pn">任务失败后不让它直接重试，而是先写一段「为什么失败」的复盘，把教训写进记忆再重来。类似人类的「吃一堑长一智」。</p>
+      <code class="adv-code" data-page-node-id="VYCmht45cHowE7hZOJtl1x">失败 → 复盘失败原因 → 写入记忆 → 重试</code>
+    </div>
+    <div class="adv-card" data-page-node-id="heqzBQysPPqB7O1ecZtbgj">
+      <div class="adv-emoji" data-page-node-id="ZmrPh70C0L765tAbbdG0g9">👥</div>
+      <h4 data-page-node-id="UvOXkkZd7YB38BY6zjF4Fj">Multi-Agent（多智能体）</h4>
+      <p data-page-node-id="NzgREkXGYkiEw6K250Feng">一个主管 Agent 拆解任务，分给多个专业 Agent 并行执行，最后汇总审核。适合一个人干不完或需要交叉校验的复杂任务。</p>
+      <code class="adv-code" data-page-node-id="NvLHZQUCSeSixs7zSW4F6K">Manager → [Researcher, Coder, Critic] → 汇总</code>
+    </div>
+    <div class="adv-card" data-page-node-id="hLLM8T5qd7ozeV80ACeVvc">
+      <div class="adv-emoji" data-page-node-id="ZW3yGiM8REgfaQrbcNSkyX">🧑‍💻</div>
+      <h4 data-page-node-id="fpc8fnV9K0dOQPO6yHoVPM">Human-in-the-loop</h4>
+      <p data-page-node-id="njsqSaFOCve8JvsYOAC5a5">在关键节点插入人工确认。不是所有动作都能交给机器，涉及真金白银或不可逆操作时，必须有人按下确认键。</p>
+      <code class="adv-code" data-page-node-id="0X3u8O71Il8KE4qkEf9tQt">高危动作 → 暂停 → 人工确认 → 继续</code>
+    </div>
+    <div class="adv-card" data-page-node-id="ZpiQC7FWHtckqfUDnb82rT">
+      <div class="adv-emoji" data-page-node-id="qV7G7hznAjinwKcayM6dyW">🖥️</div>
+      <h4 data-page-node-id="dy1ieqg6NSkunoewhUt42w">Computer / Browser Use</h4>
+      <p data-page-node-id="VIzvqVSzUE4SdfEtJ42H1b">让 Agent 直接操作浏览器和桌面：点击、输入、截图识别。不需要对方提供 API，代价是稳定性差、速度慢。</p>
+      <code class="adv-code" data-page-node-id="7dgVVInNRIuTvReR4fG1A7">截图 → 视觉理解 → 点击/输入 → 校验</code>
+    </div>
+  </div>
+</section>
+
+<!-- 六、代码示例 -->
+<section id="code" class="section" data-page-node-id="8q9ZGP3xhBLMtGlxFyzpmw">
+  <div class="section-head" data-page-node-id="B1X7Cianas7L6SeaCHbUTE">
+    <span class="section-num" data-page-node-id="K4W8yyLIHIg0gxbXgeH1Vh">06</span>
+    <h2 data-page-node-id="722guHwzESmKxDRG4uygPF">30 分钟搭一个 Agent · 从手写到框架</h2>
+    <p data-page-node-id="OsaAZxA5zt4fbZmeRNkUjf">三份递进代码 · 复制即可跑</p>
+  </div>
+
+  <div class="code-tabs" data-page-node-id="aK4SSkd3btzlg06Ownq9WI">
+    <button class="tab-btn active" data-tab="raw" data-page-node-id="1jKiBq9FNEgC2S5Q4DYZEn">极简版 · 手写 ReAct 循环</button>
+    <button class="tab-btn" data-tab="langchain" data-page-node-id="7hU5ZdXEp83lEBWYhgrCPM">LangChain · 工具调用</button>
+    <button class="tab-btn" data-tab="langgraph" data-page-node-id="fVzf5MBJ6xQNum6l6zjWGm">LangGraph · 带状态机 + 人工确认</button>
+  </div>
+
+  <div class="code-panel active" data-panel="raw" data-page-node-id="NrASybzT9ug7nuMwvahyp1">
+<pre data-page-node-id="O7ovn5qx0zWWEb3gKMOfZC"><code class="language-python" data-page-node-id="PgSrMQIgX7LP4AFDuW0ZyE">"""
+极简版 Agent · 不依赖任何 Agent 框架，80 行讲透 ReAct 原理
+"""
+import json
+from openai import OpenAI
+
+client = OpenAI()
+
+# ---------- 1. 工具定义 ----------
+def get_weather(city: str) -> str:
+    """查询城市天气（示例：真实场景换成 API 调用）"""
+    fake_db = {"北京": "晴 26°C", "上海": "小雨 23°C"}
+    return fake_db.get(city, "暂无该城市数据")
+
+def search_flights(from_city: str, to_city: str, date: str) -> str:
+    """查询航班（示例）"""
+    return f"{date} {from_city}→{to_city}：CA1234 08:00 / MU5678 14:30"
+
+# 工具名 → 函数 的映射表，Agent 决定调用后由它真正执行
+TOOLS = {"get_weather": get_weather, "search_flights": search_flights}
+
+# 工具的 JSON Schema（给模型看的"说明书"）
+TOOL_SCHEMA = [
+    {
+        "type": "function",
+        "function": {
+            "name": "get_weather",
+            "description": "查询指定城市的当前天气。当用户问天气、是否需要带伞时使用。",
+            "parameters": {
+                "type": "object",
+                "properties": {"city": {"type": "string", "description": "城市名，如 北京"}},
+                "required": ["city"],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "search_flights",
+            "description": "查询两个城市之间指定日期的航班列表。",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "from_city": {"type": "string"},
+                    "to_city": {"type": "string"},
+                    "date": {"type": "string", "description": "格式 YYYY-MM-DD"},
+                },
+                "required": ["from_city", "to_city", "date"],
+            },
+        },
+    },
+]
+
+SYSTEM_PROMPT = """你是一个出行助理。你可以调用工具来获取实时信息。
+规则：
+1. 需要实时数据时必须调用工具，不要凭记忆编造
+2. 每次只调用必要的工具，拿到结果后再决定下一步
+3. 信息足够时直接给出结论，不要画蛇添足
+"""
+
+# ---------- 2. ReAct 主循环 ----------
+def run_agent(user_task: str, max_steps: int = 8):
+    messages = [
+        {"role": "system", "content": SYSTEM_PROMPT},
+        {"role": "user", "content": user_task},
+    ]
+    trace = []
+
+    for step in range(max_steps):          # ← 刹车：最多循环 8 步
+        resp = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=messages,
+            tools=TOOL_SCHEMA,
+            temperature=0.2,
+        )
+        msg = resp.choices[0].message
+        messages.append(msg)                # ← 思考结果回填上下文
+
+        # 没有工具调用 → 认为任务完成，输出最终答案
+        if not msg.tool_calls:
+            return msg.content, trace
+
+        # 有工具调用 → 逐个执行，把结果作为 Observation 回填
+        for call in msg.tool_calls:
+            name = call.function.name
+            args = json.loads(call.function.arguments)
+            trace.append({"step": step + 1, "action": name, "args": args})
+
+            try:
+                result = TOOLS[name](**args)        # ← 真正执行
+            except Exception as e:
+                result = f"工具执行失败：{e}，请调整参数或换用其他工具"   # ← 错误也回填
+
+            trace[-1]["observation"] = result
+            messages.append({
+                "role": "tool",
+                "tool_call_id": call.id,
+                "content": str(result),
+            })
+
+    return "已达最大步数仍未完成，请人工介入", trace   # ← 兜底
+
+# ---------- 3. 运行 ----------
+answer, trace = run_agent("我明天要去上海出差，帮我看下天气和航班")
+for t in trace:
+    print(f"[Step {t['step']}] 调用 {t['action']}({t['args']}) → {t['observation'][:40]}")
+print("\n最终答案：", answer)
+</code></pre>
+  </div>
+
+  <div class="code-panel" data-panel="langchain" data-page-node-id="fNlwQXCEaupFEaJpFAIdX7">
+<pre data-page-node-id="cnv3ukZFGx8tDbgsk4hVRm"><code class="language-python" data-page-node-id="aE1XK5hYmxzMWKWzrdjuoM">"""
+LangChain 版 Agent · 用现成框架少写一半代码
+前置：pip install langchain langchain-openai
+"""
+from langchain.agents import AgentExecutor, create_tool_calling_agent
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_core.tools import tool
+from langchain_openai import ChatOpenAI
+from langchain_community.chat_message_histories import ChatMessageHistory
+
+# ---------- 1. 定义工具（用装饰器，函数注释就是给模型看的描述）----------
+@tool
+def search_docs(query: str) -> str:
+    """在企业知识库中检索资料。当问题涉及公司内部制度、产品参数时使用。"""
+    return f"[检索结果] 关于「{query}」的 3 条相关文档……"
+
+@tool
+def query_database(sql: str) -> str:
+    """对只读数据仓库执行 SQL 查询。只允许 SELECT 语句。"""
+    if not sql.strip().lower().startswith("select"):
+        return "错误：只允许 SELECT 查询"
+    return f"[查询结果] 执行 {sql[:50]}... 返回 128 行"
+
+@tool
+def send_notification(channel: str, message: str) -> str:
+    """向指定渠道发送通知消息。channel 可选：dingtalk / email / sms"""
+    return f"已通过 {channel} 发送：{message[:30]}"
+
+tools = [search_docs, query_database, send_notification]
+
+# ---------- 2. 提示词（必须保留 agent_scratchpad 占位符，这是 ReAct 的记忆区）----------
+prompt = ChatPromptTemplate.from_messages([
+    ("system", """你是一个企业运营助理。
+工作原则：
+- 需要事实数据时先调工具，不要凭空回答
+- 涉及发送消息等外部动作前，先确认内容无误
+- 完成后用简洁的中文汇报结果，附上关键数据"""),
+    MessagesPlaceholder("chat_history", optional=True),   # 长期记忆挂载点
+    ("human", "{input}"),
+    MessagesPlaceholder("agent_scratchpad"),              # 中间步骤草稿区
+])
+
+# ---------- 3. 组装 Agent ----------
+llm = ChatOpenAI(model="gpt-4o", temperature=0.2)
+agent = create_tool_calling_agent(llm, tools, prompt)
+
+# 护栏：最多 10 步、单次执行超时 60 秒、出错就停
+executor = AgentExecutor(
+    agent=agent,
+    tools=tools,
+    max_iterations=10,
+    max_execution_time=60,
+    handle_parsing_errors=True,
+    return_intermediate_steps=True,   # 保留 Trace 用于排查
+    verbose=True,
+)
+
+# ---------- 4. 带记忆地运行 ----------
+history = ChatMessageHistory()
+
+def chat(user_input: str):
+    result = executor.invoke({"input": user_input, "chat_history": history.messages})
+    history.add_user_message(user_input)
+    history.add_ai_message(result["output"])
+    return result
+
+r = chat("帮我查一下最新的差旅报销标准，然后把结论发给财务群")
+print(r["output"])
+print(f"\n本次共执行 {len(r['intermediate_steps'])} 步工具调用")
+</code></pre>
+  </div>
+
+  <div class="code-panel" data-panel="langgraph" data-page-node-id="D26IwXs7gd6L1HfdH8zjVf">
+<pre data-page-node-id="P3VHC3aOQPgsgeVA17lTC2"><code class="language-python" data-page-node-id="wvodkFTG23PZ4EHHQHA8lG">"""
+LangGraph 版 · 显式状态机 + 人工确认中断（生产级骨架）
+前置：pip install langgraph langchain-openai
+"""
+from typing import Annotated, TypedDict
+from langgraph.graph import StateGraph, END
+from langgraph.graph.message import add_messages
+from langgraph.checkpoint.memory import MemorySaver
+from langgraph.prebuilt import ToolNode, tools_condition
+from langchain_openai import ChatOpenAI
+from langchain_core.tools import tool
+
+# ---------- 1. 工具：区分只读与高危 ----------
+@tool
+def read_logs(service: str, minutes: int) -> str:
+    """读取指定服务最近 N 分钟的日志摘要。"""
+    return f"[{service}] 最近 {minutes} 分钟：502 错误 1243 次，集中在 14:02-14:07"
+
+@tool
+def restart_service(service: str, confirm: str) -> str:
+    """【高危】重启线上服务。调用前必须获得人工确认。"""
+    if confirm != "YES":
+        return "已拒绝：缺少人工确认标记"
+    return f"服务 {service} 已重启，实例数 3/3 健康"
+
+@tool
+def create_report(title: str, content: str) -> str:
+    """生成故障报告文档。"""
+    return f"报告《{title}》已生成，共 {len(content)} 字"
+
+tools = [read_logs, restart_service, create_report]
+
+# ---------- 2. 定义状态（Agent 的记忆与上下文）----------
+class AgentState(TypedDict):
+    messages: Annotated[list, add_messages]   # 消息历史自动累加
+    step_count: int                            # 已执行步数（用于刹车）
+
+# ---------- 3. 节点：模型推理 ----------
+llm = ChatOpenAI(model="gpt-4o", temperature=0).bind_tools(tools)
+
+def agent_node(state: AgentState):
+    if state.get("step_count", 0) >= 12:       # ← 硬性刹车
+        return {"messages": [("assistant", "已达最大步数，停止执行并请求人工介入")]}
+    resp = llm.invoke(state["messages"])
+    return {"messages": [resp], "step_count": state.get("step_count", 0) + 1}
+
+# ---------- 4. 组装图 ----------
+graph = StateGraph(AgentState)
+graph.add_node("agent", agent_node)
+graph.add_node("tools", ToolNode(tools))
+graph.set_entry_point("agent")
+
+# 条件边：模型要调工具就去 tools，否则结束
+graph.add_conditional_edges("agent", tools_condition, {"tools": "tools", END: END})
+graph.add_edge("tools", "agent")               # ← 关键：工具执行完回到 agent，形成循环
+
+# checkpoint 让中断/恢复成为可能
+app = graph.compile(
+    checkpointer=MemorySaver(),
+    interrupt_before=["tools"],                # ← 调工具前暂停，等待人工批准
+)
+
+# ---------- 5. 运行 + 人工确认 ----------
+config = {"configurable": {"thread_id": "incident-20260914"}}
+state = app.invoke(
+    {"messages": [("user", "订单服务 502 暴增，先看日志，如果确认是内存泄漏就重启它，最后出报告")]},
+    config,
+)
+
+# 暂停在工具调用前，人工审核后继续
+if state.get("__interrupt__"):
+    print("⚠️ 即将执行高危操作，请审核：", state["__interrupt__"])
+    if input("是否批准？(y/n) ").lower() == "y":
+        state = app.invoke(None, config)        # 恢复执行
+
+print(state["messages"][-1].content)
+</code></pre>
+  </div>
+</section>
+
+<!-- 七、评估 -->
+<section id="eval" class="section section-alt" data-page-node-id="TXyFRAI37kEFVzKOCXo842">
+  <div class="section-head" data-page-node-id="3B5AWJP94kVV8u6NcHfNZ1">
+    <span class="section-num" data-page-node-id="n2Ij4OVqjGlOI7aE3GZvJu">07</span>
+    <h2 data-page-node-id="5T4KaC6oJTrGL51F7LiERw">评估体系 · 没有指标的 Agent 就是在裸奔</h2>
+    <p data-page-node-id="A63Kh3DZ2mYmJ0uVATZiHe">Agent 评估四件套 · 上线前必须跑通</p>
+  </div>
+
+  <div class="eval-grid" data-page-node-id="fsv9bp4fDh44FNlkJp4bnt">
+    <div class="eval-card" data-page-node-id="i4UBGAyZsZFKr3OFb1Ekh2">
+      <div class="eval-icon" data-page-node-id="MaGDMSP8Ej2ctufeq6BjDv">🎯</div>
+      <h3 data-page-node-id="DiRTDrN0i7cvsxRlTllr8P">Task Success Rate 任务成功率</h3>
+      <p data-page-node-id="GJiH25g2lIMGGROJGseHAv">在一批真实任务上，Agent 端到端跑通的占比是多少？</p>
+      <div class="eval-bar" data-page-node-id="2CctANCFxoNwNiCvwDwSBh"><div class="eval-fill" style="width:78%" data-page-node-id="IuAak8lnowQ1RujrJ33LIQ"></div></div>
+      <div class="eval-target" data-page-node-id="rZtDpTUvPyUSbo8f0mbWVO">目标：&gt; 0.8（简单任务 &gt; 0.95）</div>
+    </div>
+    <div class="eval-card" data-page-node-id="3u7rEAtcJIB515PQo8Yyst">
+      <div class="eval-icon" data-page-node-id="i6iEzNmt6eQQptnOxz2FgK">🪜</div>
+      <h3 data-page-node-id="vCaFdVbBBNnFemZvLlbd31">Step Efficiency 步数效率</h3>
+      <p data-page-node-id="XcoDkG1PSGYGo3kfszSKZW">完成同一任务，Agent 实际走了几步 vs 理论最优几步？</p>
+      <div class="eval-bar" data-page-node-id="C10xB6znf7rBCeA4Z874vD"><div class="eval-fill" style="width:65%" data-page-node-id="JohpkJiKwDdtoD8D5kQALF"></div></div>
+      <div class="eval-target" data-page-node-id="YRCyBbyYzVoBbCgGdHTpc1">目标：实际步数 / 最优步数 &lt; 1.5</div>
+    </div>
+    <div class="eval-card" data-page-node-id="qEoVmD1O3CJOTgIkLJ6hAe">
+      <div class="eval-icon" data-page-node-id="r1OaglrwD3AAYg8qTKVGFy">🔧</div>
+      <h3 data-page-node-id="zfMIyK0WQDatTBaAlxd9t2">Tool Accuracy 工具调用准确率</h3>
+      <p data-page-node-id="DVth4bZmH45kTOzjTyLin5">该调的时候调了吗？参数传对了吗？有没有调用不该调的工具？</p>
+      <div class="eval-bar" data-page-node-id="QGJkIeUz6psvAEXgoCjtyd"><div class="eval-fill" style="width:88%" data-page-node-id="gCr1mxwb13QykRR66QoB6v"></div></div>
+      <div class="eval-target" data-page-node-id="nYcUYMJD2B8pdxbgWeAj8y">目标：&gt; 0.9（参数正确率单独看）</div>
+    </div>
+    <div class="eval-card" data-page-node-id="qeo2mxh6NWRitgUl3KQBQF">
+      <div class="eval-icon" data-page-node-id="ZkE82OZCS8JXbulJSmXWiT">💰</div>
+      <h3 data-page-node-id="gkGYa6UQt8vFYHpaH89vH6">Cost per Task 单任务成本</h3>
+      <p data-page-node-id="EZ2QeprZepRyyRBJK2ZUtY">平均每个任务花多少 token / 多少钱？比人工便宜多少？</p>
+      <div class="eval-bar" data-page-node-id="6zuKwLBviPo1TfvsLbXHXg"><div class="eval-fill" style="width:72%" data-page-node-id="9mmG6OMWfNFYGmuWvVfacR"></div></div>
+      <div class="eval-target" data-page-node-id="wRkb5ksmzjnY25nFerBnFz">目标：低于人工成本的 1/5</div>
+    </div>
+  </div>
+
+  <div class="optimize-card" data-page-node-id="KjR8lXMfLM6vphStUcywYQ">
+    <h3 data-page-node-id="amAD7VSnz9MazFRHgNEblc">📈 优化方向 · 当指标不达标时，从哪里下手？</h3>
+    <div class="optimize-grid" data-page-node-id="eQkflb5uxI2phCuFvHFnZ7">
+      <div class="opt-item" data-page-node-id="LVqUDqVBQrv8Kwa4YiXEUd">
+        <div class="opt-tag bad" data-page-node-id="nDRQYJoRWm9RWE7V3Gf42y">成功率低</div>
+        <p data-page-node-id="4V2cfENag3kOKDs15LHgi5">→ 补 Few-shot 示例 / 换更强模型做规划节点 / 拆分任务粒度 / 增加工具覆盖面</p>
+      </div>
+      <div class="opt-item" data-page-node-id="QGNzzB00xKYM9en3vUsc8k">
+        <div class="opt-tag bad" data-page-node-id="UG2XkwSNgLVlbAqwGE2CqP">步数太多</div>
+        <p data-page-node-id="jEaFYlZsP3gFDFcW7sdrRH">→ 优化工具描述减少试错 / 加 Plan 前置规划 / 合并可并行的工具调用 / 缓存中间结果</p>
+      </div>
+      <div class="opt-item" data-page-node-id="0QK0qZ10OnPWeNc2NU9a7E">
+        <div class="opt-tag bad" data-page-node-id="JtY96fkgax0Rv1ew6gB2dT">工具调错</div>
+        <p data-page-node-id="MODw1F9QOJGTVkgDDGhjky">→ 重写工具描述与参数 Schema / 减少同类工具数量 / 加参数校验与友好报错</p>
+      </div>
+      <div class="opt-item" data-page-node-id="jEYLtzJQ4NF2Nt6Rn2jXdr">
+        <div class="opt-tag bad" data-page-node-id="EVacATJETHMYFQ8JrN5IHg">成本过高</div>
+        <p data-page-node-id="U9h5UHCmaYnq0Wl4L3Jc7U">→ 小模型跑简单步骤 / 压缩 Observation / 缩短记忆注入 / 提高缓存命中率</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 八、生产实践 Tips -->
+<section class="section" data-page-node-id="JIXsRhmydvdIiwGOGDmmiN">
+  <div class="section-head" data-page-node-id="MuaVwC1iTP9BaGLyJVgyGB">
+    <span class="section-num" data-page-node-id="pXW7BMYUw0hWuYDBJ37ExO">08</span>
+    <h2 data-page-node-id="Ru4LeqMYnn55Z2LrZse5H2">生产实践 · 踩过的坑和最佳实践</h2>
+    <p data-page-node-id="LPRHFw7LxXiWQuyzPsPbx5">从 Demo 到生产，需要跨越的 6 道坎</p>
+  </div>
+  <div class="tips-grid" data-page-node-id="mv2qDoiSnaPTX3QN9KE8kQ">
+    <div class="tip-card" data-page-node-id="SgsleJYnH8RSiCXMNfAlc7">
+      <div class="tip-num" data-page-node-id="ca4ody47m5INNUjC1ZAGgL">01</div>
+      <h4 data-page-node-id="dQNgDMJTXilvHUP2lhbyDi">工具描述决定调用准确率</h4>
+      <p data-page-node-id="ijtEk9bWeLuJTogEMhmfss">90% 的工具调用错误源于描述含糊。写清「什么时候用、参数怎么填、什么情况不要用」，比换模型更有效。</p>
+    </div>
+    <div class="tip-card" data-page-node-id="DpNyNkrUkwskvD2kPuOuFQ">
+      <div class="tip-num" data-page-node-id="R7uiqNoBVHIskk8MGEcKN3">02</div>
+      <h4 data-page-node-id="tZ8NjZ2SC0211hQBUd7VWK">每一步都必须可观测</h4>
+      <p data-page-node-id="KWMmjniCPxA35SQjmtGAoU">完整记录 Thought / Action / Observation / 耗时 / token。Agent 出问题时，Trace 是唯一能复盘的证据链。</p>
+    </div>
+    <div class="tip-card" data-page-node-id="jzYLQZGgaokM6eA8HyyTve">
+      <div class="tip-num" data-page-node-id="mBDY66eH8w031b04jmKNXw">03</div>
+      <h4 data-page-node-id="qPdIr3latWUcn2fOC5Lup0">循环必须有刹车</h4>
+      <p data-page-node-id="BUM4NA4nxExs3Yfse7ld9c">最大步数 + 超时 + 成本上限三重熔断。没有刹车的 Agent 一旦陷入循环，会在几分钟内烧掉一天的预算。</p>
+    </div>
+    <div class="tip-card" data-page-node-id="ULMxer2A31dpYkMpbEo7DK">
+      <div class="tip-num" data-page-node-id="TsABpkHOf53sgzD5Ji1Kr6">04</div>
+      <h4 data-page-node-id="7fCWdbZipluMA59djEb6EL">写操作要幂等 + 可回滚</h4>
+      <p data-page-node-id="hErK6ckN1lkgrNV9OgldV4">任何会改数据的动作都要带幂等键，失败重试不能造成重复扣款。不可逆操作前强制人工确认。</p>
+    </div>
+    <div class="tip-card" data-page-node-id="Zw4hneurbvy6lcPZSgqrus">
+      <div class="tip-num" data-page-node-id="o63voJHmDJQcj98jbF3Q9z">05</div>
+      <h4 data-page-node-id="WkZJ4Ul51oyKMh9ZuObS4s">代码执行必须沙箱隔离</h4>
+      <p data-page-node-id="r0AoYphKbEq2vLPl9Q8oJp">Agent 生成的代码要在无网络或白名单网络的容器里跑，限制 CPU/内存/时长，绝不能直接在生产机器上执行。</p>
+    </div>
+    <div class="tip-card" data-page-node-id="WdUh8BQ4OTQI8nC1u12vvC">
+      <div class="tip-num" data-page-node-id="VmxESb2sVnprBNp0Tn76Xj">06</div>
+      <h4 data-page-node-id="vUc7y3nV8a71s9sagmpYWz">先做窄场景，再做通用</h4>
+      <p data-page-node-id="3gISxBRwKSMBJH5IBwJS50">不要一上来就做「万能助理」。先在一个高频、边界清晰、可衡量的场景做到 90% 成功率，再横向扩展。</p>
+    </div>
+  </div>
+</section>
+
+<footer class="footer" data-page-node-id="pxjLp5epFFcuBqBaGZkrQ5">
+  <div class="footer-inner" data-page-node-id="Xp02Glg7MzdYjK9m0eqF86">
+    <div class="footer-brand" data-page-node-id="Pc4d0ecAgZru4d4cQShuoZ">
+      <span class="brand-mark" data-page-node-id="amKqpZ8CYIiZzsRQfS1X85">AGENT</span>
+      <span data-page-node-id="j23KZGisfypLxDAlRW7uud">智能体 · 一站式知识图谱</span>
+    </div>
+    <div class="footer-meta" data-page-node-id="ONir0iLvWYgzFuYVCwlk9F">
+      <span data-page-node-id="tmKNFdg4bwki48REa7tbUM">📐 设计：cain · 制作：WorkBuddy</span>
+      <span data-page-node-id="fEKV6DjmvjVqBQZ67cP00j">🕒 2026 · 第 1 版</span>
+    </div>
+    <div class="footer-quote" data-page-node-id="2pSVOVcwl9aY67exqQeHqR">「LLM 是一个函数，Agent 是一台机器」</div>
+  </div>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>
